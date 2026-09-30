@@ -1,0 +1,2166 @@
+<!--
+  MAX TRACER Golf — © 2026 Jameson Stephenson. All rights reserved.
+  Proprietary and confidential. Unauthorized copying, distribution, or use
+  of this source code, in whole or in part, is strictly prohibited.
+  See LICENSE for terms.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>MAX TRACER Golf</title>
+<meta name="theme-color" content="#050706">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MAX TRACER">
+<link rel="manifest" href="manifest.webmanifest?v=4">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,800;1,900&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050706; --bg2:#080B09; --surface:#0D1210; --surface2:#131916; --line:#1B2420; --line2:#27322C;
+  --ink:#F2EFE6; --ink2:#C8C5BA; --muted:#848D86; --green:#22E07A; --green2:#15A95A; --deep:#0C3322; --gold:#C9B27A; --red:#FF5A4E;
+  --word:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --sans:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#050706; --surface:#0D1210; --ink:#F2EFE6; color-scheme:dark; } }
+:root[data-theme="dark"]{ --bg:#050706; --surface:#0D1210; --ink:#F2EFE6; color-scheme:dark; }
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;max-width:100%;overflow-x:hidden;touch-action:pan-y;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;max-width:100%;overflow-x:hidden;touch-action:pan-y;margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,input,select{font:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer;padding:0}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+img,video{max-width:100%}
+.hide{display:none!important}
+.screen{display:none;min-height:100%;flex-direction:column}
+.screen.on{display:flex}
+.mono{font-family:var(--mono)}
+.eyebrow{display:flex;align-items:center;gap:12px;font:700 10.5px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+.eyebrow::before,.eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,178,122,.55))}
+.eyebrow::after{transform:scaleX(-1)}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:14px;padding:15px 18px;font:700 13.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.btn.solid{background:linear-gradient(135deg,#3BEA8C,#14A957);color:#03140A;box-shadow:0 14px 34px -16px rgba(34,224,122,.7),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.ghost{background:var(--surface2);border:1px solid var(--line2);color:var(--ink)}
+.btn.line{border:1px solid rgba(201,178,122,.5);color:var(--ink)}
+.btn.danger{color:var(--red);border:1px solid rgba(255,90,78,.35);background:transparent}
+.btn[disabled]{opacity:.45}
+
+/* ---------- HOME ---------- */
+#home{max-width:560px;margin:0 auto;width:100%;padding:16px 22px 36px;position:relative}
+#home::before{content:"";position:absolute;left:-30%;right:-30%;top:-10%;height:62%;background:radial-gradient(ellipse at 50% 38%,rgba(34,224,122,.13),transparent 60%);pointer-events:none}
+.topline{display:flex;justify-content:space-between;align-items:center;position:relative;font:700 10px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.topline b{color:var(--gold);font-weight:700}
+.emblem{display:grid;place-items:center;margin:14px 0 2px;position:relative}
+.emblem svg{width:min(66vw,270px);height:auto;overflow:visible}
+.emblem img{width:min(59vw,220px);aspect-ratio:1;object-fit:contain;border-radius:26%;filter:drop-shadow(0 14px 28px rgba(10,100,52,.26))}
+.emblem img{animation:markFloat 5s ease-in-out infinite,markGlow 4s ease-in-out infinite}
+.emblem::after{content:"";position:absolute;width:min(62vw,230px);height:min(62vw,230px);border-radius:28%;pointer-events:none;background:linear-gradient(115deg,transparent 38%,rgba(90,255,166,.21) 49%,transparent 59%);background-size:270% 100%;animation:traceSweep 5s ease-in-out infinite;mix-blend-mode:screen}
+@keyframes markFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes markGlow{0%,100%{filter:drop-shadow(0 12px 24px rgba(10,100,52,.23))}50%{filter:drop-shadow(0 18px 33px rgba(34,224,122,.48))}}
+@keyframes traceSweep{0%,24%{background-position:100% 0;opacity:0}35%{opacity:1}68%,100%{background-position:0 0;opacity:0}}
+@media(prefers-reduced-motion:reduce){.emblem img,.emblem::after{animation:none}}
+.ticks line{stroke:#1F2A25;stroke-width:2;stroke-linecap:round}
+.ticks line.hi{stroke:var(--gold);stroke-width:2.4}
+.arc{stroke:var(--green);stroke-width:6;fill:none;stroke-linecap:round;stroke-dasharray:420;stroke-dashoffset:420;animation:fly 6s cubic-bezier(.2,.7,.3,1) infinite;filter:drop-shadow(0 0 7px rgba(34,224,122,.7))}
+.arc-core{stroke:#F0FFF5;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-dasharray:420;stroke-dashoffset:420;animation:fly 6s cubic-bezier(.2,.7,.3,1) infinite}
+.spark{fill:var(--green);animation:spark 6s infinite;filter:drop-shadow(0 0 6px var(--green))}
+@keyframes fly{0%{stroke-dashoffset:420}40%,86%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+@keyframes spark{0%,36%{opacity:0}42%,86%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.arc,.arc-core{animation:none;stroke-dashoffset:0}.spark{animation:none}}
+.wordmark{text-align:center;position:relative}
+.wordmark h1{font-family:var(--word);font-style:italic;font-weight:900;font-size:clamp(44px,14vw,72px);line-height:.84;letter-spacing:-.01em;margin:0;text-transform:uppercase}
+.wordmark h1 em{color:var(--green);font-style:italic}
+.wordmark .sub{margin-top:12px}
+.tagline{font:italic 500 21px/1.3 var(--serif);color:var(--ink2);text-align:center;margin:14px 0 24px;position:relative}
+.cta{display:grid;gap:10px;position:relative}
+.cta .btn{height:62px;justify-content:space-between;padding:0 22px;font-size:15px;letter-spacing:.2em}
+.cta .btn small{font:500 11px var(--mono);letter-spacing:.06em;text-transform:none;opacity:.8}
+.cta svg{width:18px;height:18px}
+.kit{margin:30px 0 12px;position:relative}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative}
+.tile{background:linear-gradient(165deg,#111814,#090D0B);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;align-items:stretch;gap:9px;padding:6px 6px 11px;transition:border-color .2s,transform .2s}
+.tile .art{position:relative;aspect-ratio:1;border-radius:13px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.tile .art svg,.tile .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.tile .art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 35%,rgba(0,0,0,.25));pointer-events:none}
+.tile:active{transform:scale(.97)}
+.tile .ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:radial-gradient(circle at 50% 30%,rgba(34,224,122,.16),rgba(34,224,122,.03));border:1px solid rgba(34,224,122,.18)}
+.tile svg{width:26px;height:26px;color:var(--green)}
+.tile span{font:700 10.5px/1.2 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);text-align:center}
+.hk{font:800 13px/1 var(--sans);color:var(--green);letter-spacing:.02em}
+.foot{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:22px;position:relative}
+.linkbtn{font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.legalRow{margin:10px 0 0;font-size:11.5px;text-align:center}
+.legalRow a{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+.install{width:100%;padding:14px;border-radius:14px;border:1px dashed rgba(34,224,122,.5);color:var(--green);font:700 13px var(--sans);letter-spacing:.08em}
+.hint{text-align:center;font-size:13px;color:var(--muted);line-height:1.5;margin:0}
+.hint b{color:var(--ink)}
+
+/* ---------- page headers ---------- */
+.head{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:rgba(5,7,6,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.head h2{font:italic 600 30px/1 var(--serif);margin:0;flex:1}
+.head .count{font:500 12px var(--mono);color:var(--muted)}
+.iconbtn{width:42px;height:42px;border-radius:50%;background:var(--surface);border:1px solid var(--line2);display:grid;place-items:center;flex:none;color:var(--ink)}
+.iconbtn svg{width:20px;height:20px}
+.wrap{max-width:760px;width:100%;margin:0 auto;padding:16px}
+
+/* ---------- GALLERY ---------- */
+.banner{background:var(--deep);border:1px solid rgba(34,224,122,.35);color:var(--ink);border-radius:12px;padding:12px 14px;font-size:14px;margin-bottom:14px}
+.import-row{margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+.card{position:relative;border-radius:16px;overflow:hidden;background:var(--surface);border:1px solid var(--line);text-align:left;aspect-ratio:4/5}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(3,5,4,.92))}
+.card .meta{position:absolute;left:12px;right:12px;bottom:11px;z-index:1}
+.card .meta b{display:block;font:700 13.5px var(--sans)}
+.card .meta span{font:500 11.5px var(--mono);color:var(--ink2)}
+.badges{position:absolute;top:9px;left:9px;right:9px;display:flex;gap:6px;flex-wrap:wrap;z-index:1}
+.badge{font:800 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:6px 8px;border-radius:7px;background:rgba(5,7,6,.75);border:1px solid var(--line2);color:var(--ink)}
+.badge.g{background:var(--green);color:#03140A;border-color:var(--green)}
+.empty{text-align:center;padding:64px 18px;color:var(--muted)}
+.empty h3{font:italic 600 28px var(--serif);color:var(--ink);margin:0 0 6px}
+.empty .btn{margin-top:20px}
+
+/* ---------- full-screen dark stages ---------- */
+#tracer,#editor{position:fixed;inset:0;background:#000;z-index:20}
+#tracer canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;touch-action:none;transform-origin:0 0;will-change:transform}
+.zoomfit{position:absolute;right:12px;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:3;display:flex;align-items:center;gap:8px;padding:10px 14px;font:700 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff;border-radius:999px}
+.zoomfit b{color:var(--green);font:800 12px/1 var(--mono);letter-spacing:0}
+#cam{position:absolute;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none}
+.tbar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:8px;padding:12px;padding-top:calc(env(safe-area-inset-top,0px) + 12px);z-index:3}
+.glass{background:rgba(5,7,6,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08)}
+.round{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;color:#fff}
+.round svg{width:22px;height:22px}
+.pill{flex:1;min-width:0;border-radius:999px;padding:11px 15px;font:600 13.5px var(--sans);display:flex;align-items:center;gap:9px;color:#fff}
+.pill i{width:8px;height:8px;border-radius:50%;background:#777;flex:none}
+.pill[data-s="search"] i{background:#fff;animation:blink 1s infinite}
+.pill[data-s="locked"] i{background:var(--green)}
+.pill[data-s="flight"] i,.pill[data-s="rec"] i{background:var(--green);animation:blink .5s infinite}
+@keyframes blink{50%{opacity:.25}}
+.pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qchip{border-radius:12px;padding:0 12px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;flex:none}
+.qchip b{font:800 13px/1 var(--sans);letter-spacing:.06em}
+.qchip b.uhd{color:var(--gold)}
+.qchip small{font:500 9px/1.2 var(--mono);color:#aeb8b1;margin-top:3px}
+.bbar{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:12px;padding:16px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:3}
+.import-tools{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 88px);z-index:4;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(5,7,6,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.import-controls{display:flex;align-items:center;gap:10px}
+.import-controls .chip{padding:10px 13px;font-size:11px;white-space:nowrap}
+.import-controls input{min-width:0;flex:1;accent-color:var(--green)}
+.import-time{font:500 10px var(--mono);color:var(--ink2);min-width:70px;text-align:right}
+.import-help{font:500 11px/1.35 var(--sans);color:#B9C6BE;margin-top:6px}
+.chip{color:#fff;border-radius:999px;padding:13px 20px;font:700 13px var(--sans);letter-spacing:.12em;text-transform:uppercase}
+.chip.hot,.chip.record.hot{background:var(--green);color:#03140A;border-color:var(--green);box-shadow:0 6px 24px rgba(34,224,122,.35)}
+.chip.record{display:flex;align-items:center;gap:9px;background:#d92935;border-color:#f27980;color:white;box-shadow:0 6px 24px rgba(217,41,53,.35)}
+.chip.record svg,.chip.stop svg{width:17px;height:17px;flex:none}
+.chip.stop{display:flex;align-items:center;gap:9px;background:#fff;color:#151515;border-color:#fff}
+.chip:disabled{opacity:.45;box-shadow:none}
+.camerr{position:absolute;inset:0;display:grid;place-items:center;padding:30px;text-align:center;z-index:2}
+.camerr div{max-width:330px}
+.camerr h2{font:italic 600 32px var(--serif);margin:0 0 10px}
+.camerr p{color:#B9C6BE;line-height:1.5;margin:0 0 18px}
+
+/* sheets */
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;background:#070A08;border-top:1px solid var(--line2);border-radius:24px 24px 0 0;padding:14px 16px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 16px);box-shadow:0 -20px 50px rgba(0,0,0,.6);transform:translateY(105%);transition:transform .28s ease}
+.sheet.on{transform:none}
+.grab{width:40px;height:4px;border-radius:4px;background:#26352D;margin:0 auto 12px}
+.sheet h3{font:italic 600 28px/1 var(--serif);margin:0}
+.sheet .meta{font:500 11.5px var(--mono);color:var(--muted);margin:6px 0 12px;letter-spacing:.04em}
+.rv{position:relative;height:42vh;background:#000;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.row2{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:14px}
+.sheet .linkbtn{display:block;margin:12px auto 0}
+@media (prefers-reduced-motion: reduce){.sheet,.xsheet,.pcard{transition:none}}
+
+/* player */
+.player{position:absolute;inset:0}
+.player video,.player canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.player canvas{touch-action:none}
+
+/* ---------- EDITOR ---------- */
+#editor{flex-direction:column}
+.etop{display:flex;align-items:center;gap:10px;padding:10px 12px;padding-top:calc(env(safe-area-inset-top,0px) + 10px);background:#050706;border-bottom:1px solid var(--line)}
+.etitle{flex:1;min-width:0}
+.etitle b{display:block;font:700 14px var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.etitle span{display:block;font:500 11px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp{background:linear-gradient(135deg,#3BEA8C,#14A957);color:#03140A;border-radius:999px;padding:11px 16px;font:800 12px var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.stage{flex:1;min-height:0;position:relative;background:#000}
+.ehint{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:3;max-width:calc(100% - 24px);border-radius:999px;padding:9px 14px;font:600 12.5px var(--sans);color:#fff;text-align:center;pointer-events:none}
+.transport{display:flex;align-items:center;gap:8px;padding:8px 12px 2px;background:#070A08;border-top:1px solid var(--line)}
+.tbtn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);border:1px solid var(--line2);flex:none}
+.tbtn svg{width:18px;height:18px}
+.tbtn.play{width:46px;height:46px;background:var(--ink);color:#050706;border:0}
+.clock{margin-left:auto;font:500 12px var(--mono);color:var(--ink2)}
+.scrub{position:relative;padding:6px 14px 8px;background:#070A08}
+.trimband{position:absolute;top:50%;height:6px;margin-top:-2px;border-radius:6px;background:rgba(201,178,122,.35);pointer-events:none}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;position:relative;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:#26322C}
+input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:#26322C}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ink);margin-top:-7px;box-shadow:0 0 0 4px rgba(34,224,122,.25)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:var(--ink)}
+.panel{background:#070A08;padding:10px 16px 12px;max-height:34vh;overflow:auto;border-top:1px solid var(--line)}
+.ptitle{font:italic 600 22px/1 var(--serif);margin:2px 0 8px}
+.pnote{font-size:13px;color:var(--muted);margin:0 0 10px;line-height:1.45}
+.prow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0}
+.plabel{font:700 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink2)}
+.swrow{display:flex;gap:10px;margin:8px 0 10px}
+.swc{width:34px;height:34px;border-radius:50%;border:2px solid transparent;box-shadow:inset 0 0 0 3px #070A08}
+.swc.on{border-color:var(--ink)}
+.pbtns{display:flex;gap:8px;flex-wrap:wrap}
+.pbtn{padding:11px 14px;border-radius:12px;background:var(--surface2);border:1px solid var(--line2);font:700 12px var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.pbtn.g{background:var(--deep);border-color:rgba(34,224,122,.45);color:var(--green)}
+.sw{-webkit-appearance:none;appearance:none;width:46px;height:28px;border-radius:28px;background:#26322C;position:relative;cursor:pointer;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw:checked{background:var(--green)}
+.sw:checked::after{transform:translateX(18px)}
+.fields{display:grid;grid-template-columns:1fr 1.3fr;gap:10px;margin-bottom:10px}
+.fields label{display:flex;flex-direction:column;gap:6px;font:700 10.5px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.fields input,.fields select,.txt{background:var(--surface2);border:1px solid var(--line2);border-radius:12px;padding:12px;font:600 16px var(--sans);color:var(--ink);width:100%;letter-spacing:0;text-transform:none}
+.course-results{margin:7px 0 12px;max-height:245px;overflow:auto;border:1px solid var(--line2);border-radius:12px;background:var(--surface2)}
+.course-results button{display:block;width:100%;padding:12px;text-align:left;color:var(--ink);border-bottom:1px solid var(--line);font:600 14px var(--sans)}
+.course-results button small{display:block;margin-top:3px;color:var(--muted)}
+.course-info{font:12px/1.45 var(--sans);color:var(--muted);margin:8px 0 14px}
+.course-info select{width:100%;margin:8px 0;background:var(--surface2);color:var(--ink);padding:11px;border:1px solid var(--line2);border-radius:10px}
+.yard-input{width:47px;flex:none;background:transparent;color:var(--gold);border:1px solid var(--line2);border-radius:7px;text-align:center;font:600 12px var(--sans);padding:6px 2px}
+.hrow:has(.yard-input){gap:5px}
+.hrow:has(.yard-input) .hopen{width:49px;flex:none}
+.holes{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;margin:6px 0 10px}
+.hb{aspect-ratio:1;border-radius:9px;background:var(--surface2);border:1px solid var(--line2);font:800 13px var(--sans)}
+.hb.on{background:var(--green);border-color:var(--green);color:#03140A}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:38px;height:38px;border-radius:50%;background:var(--surface2);border:1px solid var(--line2);font:700 20px/1 var(--sans)}
+.stepper output{min-width:28px;text-align:center;font:800 20px var(--mono)}
+.tools{display:grid;grid-template-columns:repeat(6,1fr);background:#050706;border-top:1px solid var(--line);padding:6px 4px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 6px)}
+.tool{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 0;color:var(--muted);position:relative}
+.tool svg{width:22px;height:22px}
+.tool span{font:700 9.5px var(--sans);letter-spacing:.12em;text-transform:uppercase}
+.tool.on{color:var(--green)}
+.tool.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:2px;border-radius:2px;background:var(--green)}
+
+/* ---------- ROUNDS ---------- */
+.rcard{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:10px}
+.rcard .l{flex:1;min-width:0}
+.rcard b{display:block;font:700 16px var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rcard span{font:500 12px var(--mono);color:var(--muted)}
+.topar{font:800 22px var(--mono);min-width:54px;text-align:right}
+.topar.u{color:var(--green)}
+.rcard-wrap{position:relative;margin-bottom:10px}
+.rcard-wrap .rcard{margin-bottom:0;padding-right:66px}
+.round-options{position:absolute;right:10px;top:50%;transform:translateY(-50%);padding:10px 8px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--green);font:700 12px var(--sans)}
+.round-menu{position:absolute;right:10px;top:calc(100% - 4px);z-index:4;padding:7px;background:#141a16;border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 25px #0009}
+.round-menu button{padding:12px 15px;color:#ff8a8a;background:none;font:700 13px var(--sans);white-space:nowrap}
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 16px}
+.sum div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.sum small{display:block;font:700 10px var(--sans);letter-spacing:.18em;color:var(--gold)}
+.sum b{font:800 20px var(--mono)}
+.hrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.hn{width:34px;font:800 16px var(--mono);color:var(--ink2)}
+.seg{display:flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
+.seg button{width:36px;height:34px;font:700 13px var(--sans);color:var(--muted)}
+.seg button.on{background:var(--surface2);color:var(--ink)}
+.hrow .stepper{margin-left:auto}
+.hrow .stepper button{width:34px;height:34px;font-size:18px}
+.hrow output.b{color:var(--green)}
+.hrow output.o{color:var(--gold)}
+
+/* ---------- modal & export & permissions ---------- */
+.scrim{position:fixed;inset:0;z-index:60;background:rgba(2,4,3,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.mcard,.xsheet,.pcard{width:100%;max-width:540px;background:#070A08;border:1px solid var(--line2);border-bottom:0;border-radius:24px 24px 0 0;padding:20px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateY(30px);transition:transform .25s ease}
+.scrim{width:100%;max-width:100vw;overflow:hidden}
+.pcard{min-width:0;width:min(100%,540px);max-width:100vw;max-height:calc(100dvh - env(safe-area-inset-top,0px) - 12px);overflow-y:auto;overflow-x:hidden;overflow-wrap:anywhere}
+.pcard .row2{min-width:0;grid-template-columns:repeat(2,minmax(0,1fr))}
+.pcard .btn{min-width:0;padding:12px 8px;letter-spacing:.06em}
+.pcard .perm-row{min-width:0;gap:9px;padding:11px}
+.pcard .perm-row i{max-width:88px;overflow-wrap:anywhere;text-align:center}
+input,select{font-size:16px}
+.scrim.on .mcard,.scrim.on .xsheet,.scrim.on .pcard{transform:none}
+.mcard h4,.xsheet h3,.pcard h3{font:italic 600 28px/1.05 var(--serif);margin:0 0 8px}
+.mcard p,.xsheet p,.pcard .lead{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.45}
+.mcard .txt{margin-bottom:14px}
+.prog{height:6px;border-radius:6px;background:#1B2420;overflow:hidden;margin:6px 0 12px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green2),var(--green));transition:width .15s}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:14px;font-weight:600}
+.pmark{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.pmark img{width:44px;height:44px;border-radius:11px;border:1px solid var(--line)}
+.perm-row{display:flex;gap:14px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);margin-bottom:10px}
+.perm-row svg{width:24px;height:24px;flex:none;color:var(--green);margin-top:2px}
+.perm-row div{flex:1;min-width:0}
+.perm-row b{display:block}
+.perm-row span{display:block;font-size:13px;color:var(--muted);margin-top:3px;line-height:1.4}
+.perm-row i{font:700 10px var(--mono);letter-spacing:.08em;padding:4px 7px;border-radius:6px;border:1px solid var(--line2);color:var(--muted);flex:none;align-self:center;font-style:normal}
+.perm-row i[data-s="granted"]{color:#03140A;background:var(--green);border-color:var(--green)}
+.perm-row i[data-s="denied"]{color:var(--red);border-color:var(--red)}
+.blocked{font-size:13px;line-height:1.5;color:#FFB4AD;background:rgba(255,90,78,.08);border:1px solid rgba(255,90,78,.35);border-radius:12px;padding:12px;margin:4px 0 12px}
+.rtip{font-size:13px;color:var(--muted);margin:0 0 4px}
+.hopen{display:flex;flex-direction:column;align-items:flex-start;width:58px;text-align:left}
+.hopen .hn{width:auto}
+.hopen small{font:700 9.5px var(--sans);letter-spacing:.1em;color:var(--green);text-transform:uppercase;margin-top:2px}
+.hopen small.none{color:var(--muted)}
+.hsHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:14px}
+.hsHead span{font:500 12px var(--mono);color:var(--muted);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hsTrace{width:100%;height:60px;justify-content:space-between;padding:0 22px;font-size:14px}
+.hsTrace svg{width:22px;height:22px}
+.hsRow{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)}
+.stepper.big button{width:46px;height:46px;font-size:24px}
+.stepper.big output{min-width:40px;font-size:26px}
+.hsShots{display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px}
+.hsShots button{flex:none;width:64px;height:80px;border-radius:10px;overflow:hidden;border:1px solid var(--line2);position:relative}
+.hsShots img{width:100%;height:100%;object-fit:cover}
+.hsShots:empty{display:none}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 110px);transform:translateX(-50%) translateY(20px);background:#0D1210;color:var(--ink);border:1px solid rgba(34,224,122,.55);padding:12px 18px;border-radius:999px;font:700 13px var(--sans);opacity:0;transition:.25s;z-index:80;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+
+<!-- ===================== HOME ===================== -->
+<section id="home" class="screen on">
+  <div class="topline"><span>Trace · Edit · Share</span><b>Golf Tracer</b></div>
+  <div class="emblem" aria-hidden="true"><img src="max-trace-logo.png" alt=""></div>
+  <div class="wordmark">
+    <h1>Max <em>Tracer</em></h1>
+    <div class="eyebrow sub">Golf Companion App</div>
+  </div>
+  <p class="tagline">Every shot, beautifully traced.</p>
+  <div class="cta">
+    <button class="btn solid" id="goTracer"><span>Tracer</span><small>Open camera</small></button>
+    <button class="btn ghost" id="goGallery"><span>Gallery</span><small id="homeCount">0 shots</small></button>
+  </div>
+
+  <div class="eyebrow kit">The Toolkit</div>
+  <div class="tiles">
+    <button class="tile" data-go="shot"><div class="art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+      <defs><linearGradient id="a1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A1A26"/><stop offset=".5" stop-color="#2E5A73"/><stop offset=".64" stop-color="#E8B57A"/></linearGradient>
+      <linearGradient id="a2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F7A45"/><stop offset="1" stop-color="#0B3019"/></linearGradient>
+      <filter id="g1" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.8"/></filter></defs>
+      <rect width="100" height="100" fill="url(#a1)"/><circle cx="72" cy="60" r="7" fill="#FFD9A0" opacity=".55" filter="url(#g1)"/>
+      <path d="M0 62 L16 50 L28 57 L44 42 L58 55 L72 46 L100 59 V66 H0z" fill="#13283A" opacity=".9"/>
+      <path d="M0 65 Q50 59 100 65 V100 H0z" fill="url(#a2)"/>
+      <ellipse cx="66" cy="76" rx="24" ry="4.5" fill="#46A866" opacity=".55"/><ellipse cx="40" cy="84" rx="9" ry="2.2" fill="#D9C49A" opacity=".75"/>
+      <path d="M22 90 C28 40 56 14 80 32" stroke="#22E07A" stroke-width="6" fill="none" filter="url(#g1)" opacity=".85"/>
+      <path d="M22 90 C28 40 56 14 80 32" stroke="#22E07A" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M22 90 C28 40 56 14 80 32" stroke="#F0FFF5" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <line x1="80" y1="76" x2="80" y2="64" stroke="#EEE" stroke-width=".8"/><path d="M80 64 l6 2 -6 2z" fill="#C9B27A"/><circle cx="22" cy="90" r="2.2" fill="#fff"/></svg>
+      <img src="tile-shot.jpg" alt="" onerror="this.remove()"></div><span>Shot Tracer</span></button>
+
+    <button class="tile" data-go="hand"><div class="art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+      <defs><radialGradient id="b1" cx=".5" cy=".4" r=".75"><stop offset="0" stop-color="#1D3A2C"/><stop offset="1" stop-color="#040705"/></radialGradient>
+      <linearGradient id="b2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F2EFE6" stop-opacity=".1"/><stop offset=".6" stop-color="#F2EFE6" stop-opacity=".85"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>
+      <filter id="g2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4"/></filter></defs>
+      <rect width="100" height="100" fill="url(#b1)"/>
+      <path d="M0 84 Q50 78 100 84 V100 H0z" fill="#0E2419"/>
+      <path d="M44 74 C18 64 16 30 40 20 C62 12 84 26 78 50 C74 64 60 70 52 64" stroke="#F2EFE6" stroke-width="9" fill="none" filter="url(#g2)" opacity=".35"/>
+      <path d="M44 74 C18 64 16 30 40 20 C62 12 84 26 78 50 C74 64 60 70 52 64" stroke="url(#b2)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M44 74 C18 64 16 30 40 20 C62 12 84 26 78 50" stroke="#fff" stroke-width="1" fill="none" stroke-linecap="round" opacity=".9"/>
+      <g transform="translate(52 64) rotate(-20)"><ellipse rx="7" ry="5.4" fill="#F4F2EC"/><path d="M-5 -4 q2 -6 4 0 M0 -5 q2 -6 4 0" stroke="#F4F2EC" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M-3 1 h6" stroke="#C9C4B6" stroke-width=".7"/><circle cx="3" cy="2.4" r="1" fill="#22E07A"/></g></svg>
+      <img src="tile-hand.jpg" alt="" onerror="this.remove()"></div><span>Hand Tracer</span></button>
+
+    <button class="tile" data-go="club"><div class="art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+      <defs><radialGradient id="c1" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#26302B"/><stop offset="1" stop-color="#050706"/></radialGradient>
+      <linearGradient id="c2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".35" stop-color="#B9C0BC"/><stop offset=".6" stop-color="#5E6662"/><stop offset="1" stop-color="#D5DAD7"/></linearGradient>
+      <linearGradient id="c3" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C9B27A" stop-opacity="0"/><stop offset="1" stop-color="#E7CF93"/></linearGradient>
+      <filter id="g3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2"/></filter></defs>
+      <rect width="100" height="100" fill="url(#c1)"/>
+      <path d="M8 34 C30 90 70 96 90 74" stroke="#C9B27A" stroke-width="10" fill="none" filter="url(#g3)" opacity=".45"/>
+      <path d="M8 34 C30 90 70 96 90 74" stroke="url(#c3)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <line x1="74" y1="6" x2="52" y2="58" stroke="#8C948F" stroke-width="2.4" stroke-linecap="round"/><line x1="74" y1="6" x2="52" y2="58" stroke="#E7EBE9" stroke-width=".7"/>
+      <path d="M53 55 L64 66 C66 69 62 73 56 72 L36 69 C30 68 30 62 35 61 z" fill="url(#c2)" stroke="#2A302D" stroke-width=".6"/>
+      <g stroke="#6C7470" stroke-width=".6" opacity=".8"><line x1="38" y1="64" x2="58" y2="67"/><line x1="37" y1="66.5" x2="58" y2="69.5"/></g>
+      <path d="M36 62 L54 57" stroke="#fff" stroke-width=".8" opacity=".8"/></svg>
+      <img src="tile-club.jpg" alt="" onerror="this.remove()"></div><span>Club Tracer</span></button>
+
+    <button class="tile" data-go="score"><div class="art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+      <defs><linearGradient id="d1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1E4A33"/><stop offset="1" stop-color="#07170F"/></linearGradient>
+      <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBF7EC"/><stop offset="1" stop-color="#E4DCC7"/></linearGradient>
+      <filter id="g4" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".6"/></filter></defs>
+      <rect width="100" height="100" fill="url(#d1)"/>
+      <g transform="rotate(-8 50 52)" filter="url(#g4)"><rect x="20" y="16" width="60" height="72" rx="4" fill="url(#d2)"/>
+      <rect x="20" y="16" width="60" height="12" rx="4" fill="#0C3322"/><rect x="20" y="24" width="60" height="4" fill="#0C3322"/>
+      <text x="50" y="25" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-weight="800" font-size="6.5" letter-spacing="1.6" fill="#C9B27A">BIRDIE</text>
+      <g stroke="#CFC6AE" stroke-width=".6"><line x1="26" y1="38" x2="74" y2="38"/><line x1="26" y1="72" x2="74" y2="72"/><line x1="26" y1="79" x2="74" y2="79"/></g>
+      <circle cx="50" cy="55" r="12" fill="none" stroke="#15A95A" stroke-width="2.2"/>
+      <text x="50" y="61.5" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="18" fill="#0C3322">3</text>
+      <text x="30" y="77" font-family="monospace" font-size="4.5" fill="#7A735F">PAR 4</text><text x="70" y="77" text-anchor="end" font-family="monospace" font-size="4.5" fill="#15A95A">−1</text></g>
+      <rect x="72" y="58" width="3" height="34" rx="1.5" transform="rotate(28 73 75)" fill="#C9B27A"/></svg>
+      <img src="tile-score.jpg" alt="" onerror="this.remove()"></div><span>Scorecard</span></button>
+
+    <button class="tile" data-go="target"><div class="art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+      <defs><linearGradient id="e1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16324A"/><stop offset=".38" stop-color="#6D96A8"/><stop offset=".4" stop-color="#2E6B3F"/><stop offset="1" stop-color="#0B2A17"/></linearGradient>
+      <linearGradient id="e2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FF7BE"/><stop offset="1" stop-color="#12A052"/></linearGradient>
+      <filter id="g5" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2"/></filter></defs>
+      <rect width="100" height="100" fill="url(#e1)"/>
+      <path d="M0 40 Q30 36 50 40 T100 39 V44 H0z" fill="#1F4F2E"/>
+      <path d="M30 100 L46 40 L54 40 L70 100z" fill="#3C8C51" opacity=".45"/>
+      <g fill="none" stroke="#22E07A"><ellipse cx="50" cy="72" rx="34" ry="9" stroke-width=".8" opacity=".35"/><ellipse cx="50" cy="72" rx="22" ry="6" stroke-width="1" opacity=".6"/><ellipse cx="50" cy="72" rx="11" ry="3" stroke-width="1.4"/></g>
+      <ellipse cx="50" cy="72" rx="6" ry="1.8" fill="#22E07A" opacity=".6" filter="url(#g5)"/>
+      <path d="M40 46 H60 L50 64 z" fill="#22E07A" filter="url(#g5)" opacity=".7"/><path d="M40 46 H60 L50 64 z" fill="url(#e2)"/>
+      <text x="50" y="40" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#fff">175</text></svg>
+      <img src="tile-target.jpg" alt="" onerror="this.remove()"></div><span>Target</span></button>
+
+    <button class="tile" data-go="uhd"><div class="art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+      <defs><radialGradient id="f1" cx=".5" cy=".3" r=".9"><stop offset="0" stop-color="#23302A"/><stop offset="1" stop-color="#040605"/></radialGradient>
+      <linearGradient id="f2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4F5F4"/><stop offset=".45" stop-color="#A7AFAB"/><stop offset=".55" stop-color="#7E8783"/><stop offset="1" stop-color="#D9DDDB"/></linearGradient>
+      <linearGradient id="f3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7CF93"/><stop offset="1" stop-color="#9C8350"/></linearGradient>
+      <filter id="g6" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".7"/></filter></defs>
+      <rect width="100" height="100" fill="url(#f1)"/>
+      <g filter="url(#g6)"><rect x="16" y="28" width="68" height="44" rx="8" fill="url(#f2)"/><rect x="19.5" y="31.5" width="61" height="37" rx="5.5" fill="#0B0F0D"/></g>
+      <text x="50" y="57" text-anchor="middle" font-family="'Barlow Condensed',Impact,sans-serif" font-style="italic" font-weight="900" font-size="26" fill="url(#f2)">4K</text>
+      <rect x="30" y="61" width="40" height="5.5" rx="1.5" fill="url(#f3)"/>
+      <text x="50" y="65.3" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-weight="800" font-size="4" letter-spacing="1.2" fill="#1A1408">ULTRA HD</text>
+      <circle cx="74" cy="36" r="1.6" fill="#22E07A"/></svg>
+      <img src="tile-uhd.jpg" alt="" onerror="this.remove()"></div><span>Ultra HD</span></button>
+  </div>
+
+  <div class="foot">
+    <button class="install" id="installBtn">Install MAX TRACER on this phone</button>
+    <p class="hint hide" id="iosHint">On iPhone or iPad, tap <b>Share</b>, choose <b>Add to Home Screen</b>, then tap <b>Add</b>. In Safari, Share is at the bottom. In other browsers, open the browser menu and choose <b>Open in Safari</b> first.</p>
+    <button class="linkbtn" id="permLink">Camera &amp; storage permissions</button>
+    <p class="legalRow"><a href="privacy.html">Privacy Policy</a> · <span style="font-family:var(--mono);opacity:.6">Build B15</span></p>
+  </div>
+</section>
+
+<!-- ===================== TRACER ===================== -->
+<section id="tracer" class="screen">
+  <video id="cam" playsinline muted autoplay></video>
+  <canvas id="disp"></canvas>
+  <canvas id="hud"></canvas>
+  <div class="tbar">
+    <button class="round glass" id="tBack" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="pill glass" id="pill" data-s="search"><i></i><span id="status">Starting camera…</span></div>
+    <button class="qchip glass hide" id="tHole" aria-label="Back to scorecard"><b id="tHoleN">H1</b><small id="tHoleP">PAR 4</small></button>
+    <button class="qchip glass" id="qBtn" aria-label="Change video quality"><b id="qLabel">HD</b><small id="resBadge">—</small></button>
+  </div>
+  <div class="bbar">
+    <button class="chip glass" id="tZoom" aria-label="Zoom in on the ball">Zoom</button>
+    <button class="chip glass" id="tReset">Reset lock</button>
+    <button class="chip record" id="tStart" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="currentColor" opacity=".36"/><circle cx="12" cy="12" r="6.5" fill="currentColor"/><circle cx="10" cy="9" r="1" fill="#fff" opacity=".8"/><circle cx="14" cy="13" r=".8" fill="#fff" opacity=".7"/></svg>Start</button>
+    <button class="chip stop hide" id="tEnd"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" fill="currentColor"/></svg>Stop</button>
+  </div>
+  <div class="import-tools hide" id="importTools">
+    <div class="import-controls"><button class="chip glass" id="importPlay">Pause scan</button><input id="importSeek" type="range" min="0" max="1" step="0.01" value="0" aria-label="Find a frame in the video"><span class="import-time" id="importTime">0:00 / 0:00</span></div>
+    <div class="import-help" id="importHelp">Scanning for a ball. Drag the timeline to find it, then tap the ball to lock on.</div>
+  </div>
+  <button class="zoomfit glass hide" id="zoomFit" aria-label="Zoom out to fit"><b id="zoomLvl">2.0×</b>Zoom out</button>
+  <div class="camerr hide" id="camErr"><div>
+    <h2>Camera unavailable</h2>
+    <p id="camErrMsg">Allow camera access for this page, then try again.</p>
+    <button class="btn solid" id="camRetry">Try again</button>
+  </div></div>
+  <div class="sheet" id="sheet">
+    <div class="grab"></div>
+    <h3 id="sheetTitle">Shot finished</h3>
+    <div class="meta" id="sheetMeta"></div>
+    <div class="rv" id="rvStage"></div>
+    <div class="row2">
+      <button class="btn ghost" id="discard">Discard</button>
+      <button class="btn solid" id="save">Save shot</button>
+    </div>
+    <button class="linkbtn" id="saveEdit">Save &amp; open editor</button>
+  </div>
+</section>
+
+<!-- ===================== GALLERY ===================== -->
+<section id="gallery" class="screen">
+  <div class="head">
+    <button class="iconbtn" id="gBack" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h2>Your Shots</h2><span class="count" id="gCount"></span>
+  </div>
+  <div class="wrap">
+    <div class="banner hide" id="gBanner"></div>
+    <div class="import-row"><button class="btn line" id="importVideoBtn" style="width:100%">Add tracer to an existing video</button><input id="importVideoFile" class="hide" type="file" accept="video/*,.mp4,.mov,.webm" aria-label="Choose an existing golf video"></div>
+    <div class="grid" id="grid"></div>
+    <div class="empty hide" id="gEmpty"><h3>No shots yet</h3>Open Tracer, lock onto a ball, and save your first shot.<br><button class="btn solid" id="gToTracer">Open Tracer</button></div>
+  </div>
+</section>
+
+<!-- ===================== EDITOR ===================== -->
+<section id="editor" class="screen">
+  <div class="etop">
+    <button class="iconbtn" id="eBack" aria-label="Back to gallery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="etitle"><b id="eTitle">Shot</b><span id="eSub"></span></div>
+    <button class="iconbtn" id="eDel" aria-label="Delete shot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+    <button class="exp" id="eExport">Export</button>
+  </div>
+  <div class="stage" id="eStage">
+    <div class="ehint glass hide" id="eHint"></div>
+  </div>
+  <div class="transport">
+    <button class="tbtn play" id="ePlay" aria-label="Play or pause"><svg viewBox="0 0 24 24" fill="currentColor" id="ePlayIc"><path d="M8 5v14l11-7z"/></svg></button>
+    <button class="tbtn" id="eBackF" aria-label="Previous frame"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l-6 6 6 6"/></svg></button>
+    <button class="tbtn" id="eFwdF" aria-label="Next frame"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"/></svg></button>
+    <span class="clock" id="eClock">0:00.0 / 0:00.0</span>
+  </div>
+  <div class="scrub"><div class="trimband" id="eBand"></div><input type="range" id="eScrub" min="0" max="1" step="0.001" value="0" aria-label="Scrub video"></div>
+  <div class="panel" id="ePanel"></div>
+  <nav class="tools" id="eTools">
+    <button class="tool" data-t="shot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 20h18"/><path d="M5.5 18.5C7 9 12.5 4.5 20 6.5"/><circle cx="5.5" cy="18" r="1.7" fill="currentColor"/></svg><span>Shot</span></button>
+    <button class="tool" data-t="club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3L9 16"/><path d="M9 16l-3.4 1.3c-.9.4-.8 1.6.2 1.8l4.5.8c.8.1 1.3-.6 1-1.3L9 16z"/></svg><span>Club</span></button>
+    <button class="tool" data-t="hand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 19C3 13 5 6 11 4.5s10 3 8.5 10"/><circle cx="19.5" cy="14.5" r="2" fill="currentColor"/></svg><span>Hand</span></button>
+    <button class="tool" data-t="target"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M8 4.5h8l-4 7z"/><ellipse cx="12" cy="17" rx="8" ry="2.8"/></svg><span>Target</span></button>
+    <button class="tool" data-t="score"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M4 8h16M9.5 8v13M14.5 8v13"/></svg><span>Score</span></button>
+    <button class="tool" data-t="cut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="2.6"/><circle cx="6" cy="18" r="2.6"/><path d="M8.2 7.6L20 18M8.2 16.4L20 6"/></svg><span>Cut</span></button>
+  </nav>
+</section>
+
+<!-- ===================== ROUNDS ===================== -->
+<section id="rounds" class="screen">
+  <div class="head">
+    <button class="iconbtn" id="rBack" aria-label="Back to home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h2>Scorecards</h2>
+  </div>
+  <div class="wrap">
+    <button class="btn solid" id="rNew" style="width:100%;margin-bottom:16px">New round</button>
+    <div id="rList"></div>
+    <div class="empty hide" id="rEmpty"><h3>No rounds yet</h3>Start a round to keep score and show a scorecard on your clips.</div>
+  </div>
+</section>
+
+<section id="roundEd" class="screen">
+  <div class="head">
+    <button class="iconbtn" id="reBack" aria-label="Back to scorecards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h2>Scorecard</h2>
+  </div>
+  <div class="wrap">
+    <input class="txt" id="reCourse" placeholder="Course name" aria-label="Course name">
+    <div class="course-results hide" id="courseResults" role="listbox" aria-label="Matching golf courses"></div>
+    <div class="course-info" id="courseInfo">Type a course name to find its public scorecard. Confirm the course and tee before filling hole details.</div>
+    <div class="sum"><div><small>OUT</small><b id="sOut">–</b></div><div><small>IN</small><b id="sIn">–</b></div><div><small>TOTAL</small><b id="sTot">–</b></div><div><small>TO PAR</small><b id="sPar">–</b></div></div>
+    <p class="rtip">Tap a hole to trace a shot or record your score.</p>
+    <div id="reHoles"></div>
+    <button class="btn danger" id="reDel" style="width:100%;margin-top:20px">Delete round</button>
+  </div>
+</section>
+
+<!-- ===================== OVERLAYS ===================== -->
+<div class="scrim" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="mcard">
+    <h4 id="mTitle"></h4><p id="mText"></p>
+    <input class="txt hide" id="mInput">
+    <div class="course-results hide" id="newCourseResults" role="listbox" aria-label="Suggested courses"></div>
+    <div class="row2"><button class="btn ghost" id="mCancel">Cancel</button><button class="btn solid" id="mOk">OK</button></div>
+  </div>
+</div>
+
+<div class="scrim" id="xWrap" role="dialog" aria-modal="true" aria-labelledby="xTitle">
+  <div class="xsheet">
+    <h3 id="xTitle">Export shot</h3>
+    <p>Renders your clip with every trace and overlay, then saves it to your phone. It plays through once in real time.</p>
+    <label class="srow"><span>Date &amp; time stamp</span><input type="checkbox" class="sw" id="xStamp"></label>
+    <div class="prog hide" id="xProg"><i id="xBar"></i></div>
+    <p id="xMsg" class="hide"></p>
+    <div class="row2"><button class="btn ghost" id="xClose">Close</button><button class="btn solid" id="xGo">Export &amp; save</button></div>
+  </div>
+</div>
+
+<div class="scrim" id="perm" role="dialog" aria-modal="true" aria-labelledby="permTitle">
+  <div class="pcard">
+    <div class="pmark"><img src="icon-192.png" alt="" onerror="this.remove()"><h3 id="permTitle">Allow access</h3></div>
+    <p class="lead">MAX TRACER needs two things on this phone to trace and keep your shots.</p>
+    <div class="perm-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.8"/></svg><div><b>Camera</b><span>Lock onto the ball and trace your shot live.</span></div><i id="pCam">NOT SET</i></div>
+    <div class="perm-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="2.8"/><path d="M4 5.5v13c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8v-13"/><path d="M4 12c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8"/></svg><div><b>Storage</b><span>Keep your saved shots and scorecards, even after you close the app.</span></div><i id="pSto">NOT SET</i></div>
+    <div class="blocked hide" id="pBlocked"></div>
+    <div class="row2"><button class="btn ghost" id="pDeny">Don’t allow</button><button class="btn solid" id="pAllow">Allow</button></div>
+  </div>
+</div>
+
+<div class="scrim" id="holeSheet" role="dialog" aria-modal="true" aria-labelledby="hsTitle">
+  <div class="xsheet">
+    <div class="hsHead"><h3 id="hsTitle">Hole 1</h3><span id="hsCourse"></span></div>
+    <button class="btn solid hsTrace" id="hsTrace"><span>Trace a shot</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 20h18"/><path d="M5.5 18.5C7 9 12.5 4.5 20 6.5"/></svg></button>
+    <div class="hsRow"><span class="plabel">Score</span><div class="stepper big"><button id="hsMinus" aria-label="Lower score">−</button><output id="hsVal">–</output><button id="hsPlus" aria-label="Raise score">+</button></div></div>
+    <div class="hsRow"><span class="plabel">Par</span><div class="seg" id="hsPar" role="group" aria-label="Par"></div></div>
+    <div class="hsShots" id="hsShots"></div>
+    <div class="row2"><button class="btn ghost" id="hsDone">Done</button><button class="btn line" id="hsNext">Next hole →</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const once = (el, ev) => new Promise(r => el.addEventListener(ev, r, { once: true }));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const fmtDate = d => new Intl.DateTimeFormat(undefined, { weekday:'short', month:'short', day:'numeric', year:'numeric' }).format(d);
+const fmtDay = d => new Intl.DateTimeFormat(undefined, { month:'short', day:'numeric', year:'numeric' }).format(d);
+const fmtTime = d => new Intl.DateTimeFormat(undefined, { hour:'numeric', minute:'2-digit', second:'2-digit' }).format(d);
+const fmtClock = s => { s = Math.max(0, s || 0); const m = Math.floor(s / 60); return m + ':' + (s - m * 60).toFixed(1).padStart(4, '0'); };
+const toParStr = d => d === 0 ? 'E' : d > 0 ? '+' + d : '−' + Math.abs(d);
+const CLUBS = ['Driver','3 Wood','5 Wood','Hybrid','3 Iron','4 Iron','5 Iron','6 Iron','7 Iron','8 Iron','9 Iron','PW','GW','SW','LW','Putter'];
+const COLORS = {
+  green: { main:'#22E07A', glow:'rgba(34,224,122,.35)', core:'rgba(240,255,245,.95)' },
+  ivory: { main:'#F2EFE6', glow:'rgba(242,239,230,.3)', core:'#FFFFFF' },
+  gold:  { main:'#D4B872', glow:'rgba(212,184,114,.35)', core:'#FFF6DD' },
+  red:   { main:'#FF4D3D', glow:'rgba(255,77,61,.35)', core:'#FFE5E1' }
+};
+document.fonts && document.fonts.load && ['700 20px Manrope','700 20px "JetBrains Mono"','italic 900 20px "Barlow Condensed"'].forEach(f => document.fonts.load(f).catch(() => {}));
+
+/* emblem ticks */
+(() => { const g = $('#ticks'); if (!g) return; let h = '';
+  for (let i = 0; i < 60; i++) { const a = (i * 6 - 90) * Math.PI / 180, hi = i % 5 === 0, r1 = hi ? 111 : 114;
+    h += `<line ${hi && (i <= 15 || i >= 50) ? 'class="hi" ' : ''}x1="${(130 + r1 * Math.cos(a)).toFixed(1)}" y1="${(130 + r1 * Math.sin(a)).toFixed(1)}" x2="${(130 + 120 * Math.cos(a)).toFixed(1)}" y2="${(130 + 120 * Math.sin(a)).toFixed(1)}"/>`; }
+  g.innerHTML = h; })();
+
+/* ================= STORAGE ================= */
+const mem = { shots: new Map(), rounds: new Map() };
+let dbp = null;
+function idb(){
+  if (dbp) return dbp;
+  dbp = new Promise((res, rej) => {
+    let r; try { r = indexedDB.open('shot-tracer', 2); } catch (e) { rej(e); return; }
+    r.onupgradeneeded = () => { const db = r.result;
+      if (!db.objectStoreNames.contains('shots')) db.createObjectStore('shots', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('rounds')) db.createObjectStore('rounds', { keyPath: 'id' }); };
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+  return dbp;
+}
+function tx(store, mode, fn){
+  return idb().then(db => new Promise((res, rej) => {
+    const t = db.transaction(store, mode); const req = fn(t.objectStore(store));
+    t.oncomplete = () => res(req && req.result); t.onerror = () => rej(t.error);
+  }));
+}
+const all = async s => { try { return (await tx(s, 'readonly', o => o.getAll())) || []; } catch (e) { return [...mem[s].values()]; } };
+const get = async (s, id) => { try { return await tx(s, 'readonly', o => o.get(id)); } catch (e) { return mem[s].get(id); } };
+const put = async (s, v) => { try { await tx(s, 'readwrite', o => o.put(v)); } catch (e) { mem[s].set(v.id, v); } };
+const del = async (s, id) => { try { await tx(s, 'readwrite', o => o.delete(id)); } catch (e) { mem[s].delete(id); } };
+
+/* ================= UI HELPERS ================= */
+function show(id){ $$('.screen').forEach(s => s.classList.toggle('on', s.id === id)); window.scrollTo(0, 0); }
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1900); }
+function ask({ title, text = '', input = false, value = '', placeholder = '', ok = 'OK', danger = false }){
+  return new Promise(res => {
+    const m = $('#modal'), inp = $('#mInput'), okB = $('#mOk'), cB = $('#mCancel');
+    $('#mTitle').textContent = title; $('#mText').textContent = text; $('#mText').classList.toggle('hide', !text);
+    inp.classList.toggle('hide', !input); inp.value = value; inp.placeholder = placeholder;
+    okB.textContent = ok; okB.className = 'btn ' + (danger ? 'danger' : 'solid');
+    m.classList.add('on'); setTimeout(() => (input ? inp : okB).focus(), 60);
+    const done = v => { m.classList.remove('on'); okB.onclick = cB.onclick = inp.onkeydown = null; res(v); };
+    okB.onclick = () => done(input ? inp.value.trim() : true);
+    cB.onclick = () => done(input ? null : false);
+    inp.onkeydown = e => { if (e.key === 'Enter') okB.click(); };
+  });
+}
+async function refreshCount(){ const n = (await all('shots')).length; $('#homeCount').textContent = n + (n === 1 ? ' shot' : ' shots'); }
+refreshCount();
+
+/* ================= DRAWING (shared by live view, player and export) ================= */
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function smoothPath(ctx, P){
+  ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]);
+  for (let i = 1; i < P.length - 1; i++) ctx.quadraticCurveTo(P[i][0], P[i][1], (P[i][0] + P[i+1][0]) / 2, (P[i][1] + P[i+1][1]) / 2);
+  const l = P[P.length - 1]; ctx.lineTo(l[0], l[1]);
+}
+function drawRibbon(ctx, P, col, w, head){
+  if (P.length < 2) return;
+  ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  smoothPath(ctx, P); ctx.strokeStyle = 'rgba(0,0,0,.4)'; ctx.lineWidth = w * 2.2; ctx.stroke();
+  smoothPath(ctx, P); ctx.strokeStyle = col.glow; ctx.lineWidth = w * 2.6; ctx.shadowColor = col.main; ctx.shadowBlur = w * 3; ctx.stroke(); ctx.shadowBlur = 0;
+  smoothPath(ctx, P); ctx.strokeStyle = col.main; ctx.lineWidth = w; ctx.stroke();
+  smoothPath(ctx, P); ctx.strokeStyle = col.core; ctx.lineWidth = w * .34; ctx.stroke();
+  if (head) { const h = P[P.length - 1]; ctx.beginPath(); ctx.arc(h[0], h[1], w * .9, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); }
+  ctx.restore();
+}
+function catmull(p0, p1, p2, p3, s){
+  const s2 = s * s, s3 = s2 * s;
+  const f = (a, b, c, d) => .5 * ((2 * b) + (-a + c) * s + (2 * a - 5 * b + 4 * c - d) * s2 + (-a + 3 * b - 3 * c + d) * s3);
+  return [f(p0.x, p1.x, p2.x, p3.x), f(p0.y, p1.y, p2.y, p3.y)];
+}
+function sampleKeys(keys, t){
+  const K = keys.slice().sort((a, b) => a.t - b.t); if (!K.length || t < K[0].t - 1e-3) return [];
+  const out = [[K[0].x, K[0].y]];
+  for (let i = 0; i < K.length - 1; i++) {
+    const a = K[i], b = K[i+1]; if (t <= a.t) break;
+    const p0 = K[i-1] || a, p3 = K[i+2] || b, end = t >= b.t ? 1 : (t - a.t) / Math.max(1e-6, b.t - a.t);
+    for (let j = 1; j <= 10; j++) { const s = Math.min(j / 10, end); out.push(catmull(p0, a, b, p3, s)); if (s >= end) break; }
+  }
+  return out;
+}
+function drawTarget(ctx, W, H, tg, t, u){
+  const x = tg.x * W, y = tg.y * H;
+  ctx.save();
+  for (let k = 0; k < 3; k++) {
+    const ph = ((t * .8) + k / 3) % 1, rx = u * (3 + ph * 9), a = (1 - ph) * .7;
+    ctx.beginPath(); ctx.ellipse(x, y, rx, rx * .32, 0, 0, Math.PI * 2); ctx.strokeStyle = `rgba(34,224,122,${a.toFixed(3)})`; ctx.lineWidth = u * .35; ctx.stroke();
+  }
+  ctx.beginPath(); ctx.ellipse(x, y, u * 2.2, u * .7, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(34,224,122,.45)'; ctx.fill();
+  const cy = y - u * 3.2, cw = u * 3.4, ch = u * 3.4;
+  ctx.beginPath(); ctx.moveTo(x - cw, cy - ch); ctx.lineTo(x + cw, cy - ch); ctx.lineTo(x, cy); ctx.closePath();
+  const g = ctx.createLinearGradient(0, cy - ch, 0, cy); g.addColorStop(0, '#7CF5B0'); g.addColorStop(1, '#15A95A');
+  ctx.fillStyle = g; ctx.shadowColor = '#22E07A'; ctx.shadowBlur = u * 2.2; ctx.fill(); ctx.shadowBlur = 0;
+  let ly = cy - ch - u * 1.6;
+  ctx.textAlign = 'center'; ctx.shadowColor = 'rgba(0,0,0,.7)'; ctx.shadowBlur = u * .8;
+  if (tg.club) { ctx.font = `800 ${(u * 2.6).toFixed(1)}px Manrope, sans-serif`; ctx.fillStyle = '#F2EFE6'; ctx.fillText(tg.club.toUpperCase(), x, ly); ly -= u * 3.3; }
+  if (tg.yards) {
+    ctx.font = `700 ${(u * 6.2).toFixed(1)}px "JetBrains Mono", monospace`; ctx.fillStyle = '#FFFFFF'; ctx.fillText(String(tg.yards), x, ly);
+    ctx.font = `800 ${(u * 2.1).toFixed(1)}px Manrope, sans-serif`; ctx.fillStyle = '#C9B27A'; ctx.fillText('YDS', x, ly - u * 6.4);
+  }
+  ctx.restore();
+}
+function drawCard(ctx, W, H, r, hole, u){
+  if (!r) return;
+  const start = hole && hole > 9 ? 9 : 0, bw = Math.min(W * .92, u * 100), x0 = (W - bw) / 2, y0 = u * 3.2;
+  const headH = u * 4.4, rowH = u * 3.3, h = headH + rowH * 3 + u * 1.4;
+  ctx.save();
+  rr(ctx, x0, y0, bw, h, u * 1.6); ctx.fillStyle = 'rgba(5,8,6,.8)'; ctx.fill(); ctx.strokeStyle = 'rgba(201,178,122,.55)'; ctx.lineWidth = Math.max(1, u * .15); ctx.stroke();
+  ctx.textBaseline = 'middle';
+  ctx.font = `700 ${(u * 1.9).toFixed(1)}px Manrope, sans-serif`; ctx.fillStyle = '#F2EFE6'; ctx.textAlign = 'left';
+  const name = (r.course || 'Round').toUpperCase(); ctx.fillText(name.length > 30 ? name.slice(0, 29) + '…' : name, x0 + u * 2, y0 + headH / 2);
+  ctx.textAlign = 'right'; ctx.font = `italic 900 ${(u * 2.3).toFixed(1)}px "Barlow Condensed", sans-serif`;
+  const fw = ctx.measureText('TRACER').width; ctx.fillStyle = '#22E07A'; ctx.fillText('TRACER', x0 + bw - u * 2, y0 + headH / 2); ctx.fillStyle = '#F2EFE6'; ctx.fillText('MAX ', x0 + bw - u * 2 - fw, y0 + headH / 2);
+  ctx.fillStyle = 'rgba(201,178,122,.35)'; ctx.fillRect(x0 + u * 1.5, y0 + headH, bw - u * 3, Math.max(1, u * .1));
+  const labelW = bw * .15, totW = bw * .16, colW = (bw - labelW - totW) / 9, ry = i => y0 + headH + u * .7 + rowH * (i + .5);
+  ctx.textAlign = 'left'; ctx.font = `700 ${(u * 1.45).toFixed(1)}px "JetBrains Mono", monospace`; ctx.fillStyle = '#848D86';
+  ['HOLE', 'PAR', 'SCORE'].forEach((l, i) => ctx.fillText(l, x0 + u * 2, ry(i)));
+  for (let i = 0; i < 9; i++) {
+    const hn = start + i + 1, cx = x0 + labelW + colW * (i + .5), par = r.pars[hn - 1], sc = r.scores[hn - 1];
+    if (hn === hole) { rr(ctx, cx - colW * .44, y0 + headH + u * .5, colW * .88, rowH * 3 + u * .3, u * .8); ctx.fillStyle = 'rgba(34,224,122,.16)'; ctx.fill(); }
+    ctx.textAlign = 'center';
+    ctx.font = `700 ${(u * 1.7).toFixed(1)}px "JetBrains Mono", monospace`; ctx.fillStyle = hn === hole ? '#22E07A' : '#C8C5BA'; ctx.fillText(hn, cx, ry(0));
+    ctx.fillStyle = '#848D86'; ctx.fillText(par, cx, ry(1));
+    if (sc != null) {
+      ctx.fillStyle = '#FFFFFF'; ctx.font = `700 ${(u * 1.9).toFixed(1)}px "JetBrains Mono", monospace`; ctx.fillText(sc, cx, ry(2));
+      const d = sc - par, rad = u * 1.45; ctx.lineWidth = Math.max(1, u * .16);
+      if (d <= -1) { ctx.strokeStyle = '#22E07A'; ctx.beginPath(); ctx.arc(cx, ry(2), rad, 0, Math.PI * 2); ctx.stroke(); if (d <= -2) { ctx.beginPath(); ctx.arc(cx, ry(2), rad + u * .45, 0, Math.PI * 2); ctx.stroke(); } }
+      if (d >= 1) { ctx.strokeStyle = '#C9B27A'; ctx.strokeRect(cx - rad, ry(2) - rad, rad * 2, rad * 2); if (d >= 2) ctx.strokeRect(cx - rad - u * .45, ry(2) - rad - u * .45, rad * 2 + u * .9, rad * 2 + u * .9); }
+    }
+  }
+  let tp = 0, any = false; r.scores.forEach((s, i) => { if (s != null) { tp += s - r.pars[i]; any = true; } });
+  const tx = x0 + bw - totW / 2;
+  ctx.textAlign = 'center'; ctx.font = `800 ${(u * 1.3).toFixed(1)}px Manrope, sans-serif`; ctx.fillStyle = '#C9B27A'; ctx.fillText('TO PAR', tx, ry(0));
+  ctx.font = `700 ${(u * 3.6).toFixed(1)}px "JetBrains Mono", monospace`; ctx.fillStyle = tp < 0 ? '#22E07A' : '#F2EFE6'; ctx.fillText(any ? toParStr(tp) : '–', tx, (ry(1) + ry(2)) / 2);
+  ctx.restore();
+}
+function drawStampBrand(ctx, W, H, when, opts, u){
+  ctx.save(); ctx.textBaseline = 'alphabetic';
+  const fs = Math.max(12, u * 2.4), pad = fs * .6, y = H - fs * 1.5;
+  if (opts.stamp && when) {
+    const txt = (fmtDate(new Date(when)) + '  ·  ' + fmtTime(new Date(when))).toUpperCase();
+    ctx.font = `600 ${fs.toFixed(1)}px "JetBrains Mono", monospace`;
+    const w = ctx.measureText(txt).width;
+    rr(ctx, fs - pad, y - fs - pad * .5, w + pad * 2, fs + pad * 1.3, fs * .4); ctx.fillStyle = 'rgba(5,8,6,.62)'; ctx.fill();
+    ctx.fillStyle = '#C9B27A'; ctx.fillRect(fs - pad, y - fs - pad * .5, fs * .18, fs + pad * 1.3);
+    ctx.fillStyle = '#F2EFE6'; ctx.fillText(txt, fs + fs * .1, y);
+  }
+  if (opts.brand) {
+    const bf = fs * 1.5; ctx.textAlign = 'right'; ctx.font = `italic 900 ${bf.toFixed(1)}px "Barlow Condensed", sans-serif`;
+    const fw = ctx.measureText('TRACER').width, bx = W - fs;
+    ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = fs * .5;
+    ctx.fillStyle = '#22E07A'; ctx.fillText('TRACER', bx, y); ctx.fillStyle = '#F2EFE6'; ctx.fillText('MAX ', bx - fw, y);
+    ctx.shadowBlur = 0; ctx.font = `700 ${(fs * .5).toFixed(1)}px Manrope, sans-serif`; ctx.fillStyle = '#C9B27A'; ctx.fillText('G O L F   T R A C E R', bx, y + fs * .85);
+  }
+  ctx.restore();
+}
+function drawOverlays(ctx, W, H, s, t, opts = {}){
+  const u = Math.min(W, H) / 100;
+  if (s.showTrace !== false) {
+    const col = COLORS[s.traceColor] || COLORS.green;
+    if (s.trace && s.trace.length > 1) {
+      const P = s.trace.filter(p => p.t <= t + 1e-3).map(p => [p.x * W, p.y * H]);
+      if (P.length > 1) drawRibbon(ctx, P, col, u * 1.15, P.length < s.trace.length);
+    }
+    const m = s.manualTrace;
+    if (m && t >= m.t0) {
+      const pr = clamp((t - m.t0) / m.dur, 0, 1), e = 1 - Math.pow(1 - pr, 1.8);
+      const c = { x: 2 * m.p1.x - (m.p0.x + m.p2.x) / 2, y: 2 * m.p1.y - (m.p0.y + m.p2.y) / 2 }, P = [];
+      for (let i = 0; i <= 48; i++) { const q = e * i / 48, a = 1 - q; P.push([(a * a * m.p0.x + 2 * a * q * c.x + q * q * m.p2.x) * W, (a * a * m.p0.y + 2 * a * q * c.y + q * q * m.p2.y) * H]); }
+      drawRibbon(ctx, P, col, u * 1.15, pr < 1);
+    }
+  }
+  [['hand', 1.3], ['club', .75]].forEach(([k, wm]) => {
+    const tr = s[k]; if (!tr || !tr.keys || tr.keys.length < 2) return;
+    const P = sampleKeys(tr.keys, t).map(p => [p[0] * W, p[1] * H]);
+    if (P.length > 1) drawRibbon(ctx, P, COLORS[tr.color] || COLORS.ivory, u * wm, false);
+  });
+  if (s.target && (s.impactT == null || t >= s.impactT - .05)) drawTarget(ctx, W, H, s.target, t, u);
+  if (s.card && s.card.show && opts.round) drawCard(ctx, W, H, opts.round, s.hole, u);
+  if (opts.temp) opts.temp.forEach(p => { ctx.beginPath(); ctx.arc(p.x * W, p.y * H, u * 2, 0, Math.PI * 2); ctx.strokeStyle = '#22E07A'; ctx.lineWidth = u * .4; ctx.stroke(); });
+  if (opts.keys) opts.keys.forEach(p => { ctx.beginPath(); ctx.arc(p.x * W, p.y * H, u * .9, 0, Math.PI * 2); ctx.fillStyle = Math.abs(p.t - t) < .02 ? '#22E07A' : 'rgba(242,239,230,.6)'; ctx.fill(); });
+  drawStampBrand(ctx, W, H, s.createdAt, { stamp: opts.stamp, brand: opts.brand }, u);
+}
+
+/* ================= PLAYER ================= */
+async function resolveDuration(v, fb){
+  if (isFinite(v.duration) && v.duration > 0) return v.duration;
+  return new Promise(res => {
+    let done = false;
+    const fin = () => { if (done) return; done = true; v.removeEventListener('durationchange', h); const d = isFinite(v.duration) && v.duration > 0 ? v.duration : (fb || 0); try { v.currentTime = 0; } catch (e) {} res(d); };
+    const h = () => { if (isFinite(v.duration)) fin(); };
+    v.addEventListener('durationchange', h);
+    try { v.currentTime = 1e101; } catch (e) {}
+    setTimeout(fin, 1500);
+  });
+}
+class Player {
+  constructor(root, { onTap, onTime } = {}){
+    this.root = root; this.onTime = onTime;
+    const d = document.createElement('div'); d.className = 'player'; root.prepend(d);
+    this.v = document.createElement('video'); this.v.muted = true; this.v.playsInline = true; this.v.setAttribute('playsinline', ''); this.v.preload = 'auto';
+    this.c = document.createElement('canvas'); d.append(this.v, this.c); this.ctx = this.c.getContext('2d');
+    this.shot = null; this.url = null; this.dur = 0; this.opts = { brand: true, stamp: false }; this.raf = 0;
+    this.c.addEventListener('pointerdown', e => { if (!onTap || !this.W) return; const p = this.toNorm(e); if (p) onTap(p); });
+  }
+  async load(shot){
+    this.unload(); this.shot = shot; this.url = URL.createObjectURL(shot.blob); this.v.src = this.url;
+    if (!(this.v.readyState >= 1)) await once(this.v, 'loadedmetadata');
+    this.dur = await resolveDuration(this.v, shot.dur);
+    const vw = this.v.videoWidth || 720, vh = this.v.videoHeight || 1280, k = Math.min(1, 1280 / Math.max(vw, vh));
+    this.W = this.c.width = Math.round(vw * k); this.H = this.c.height = Math.round(vh * k);
+    this.seek(this.trimA()); this.loop();
+  }
+  trimA(){ return this.shot && this.shot.trim ? this.shot.trim[0] : 0; }
+  trimB(){ return this.shot && this.shot.trim ? Math.min(this.shot.trim[1], this.dur) : this.dur; }
+  loop(){
+    cancelAnimationFrame(this.raf);
+    const tick = () => {
+      if (!this.shot) return;
+      const t = this.v.currentTime;
+      if (!this.v.paused && t >= this.trimB() - .02) { this.v.currentTime = this.trimA(); }
+      this.ctx.clearRect(0, 0, this.W, this.H);
+      drawOverlays(this.ctx, this.W, this.H, this.shot, t, this.opts);
+      if (this.onTime) this.onTime(t);
+      this.raf = requestAnimationFrame(tick);
+    };
+    tick();
+  }
+  unload(){ cancelAnimationFrame(this.raf); this.v.pause(); this.v.removeAttribute('src'); try { this.v.load(); } catch (e) {} if (this.url) URL.revokeObjectURL(this.url); this.url = null; this.shot = null; }
+  play(){ if (this.v.currentTime >= this.trimB() - .05) this.v.currentTime = this.trimA(); return this.v.play().catch(() => {}); }
+  pause(){ this.v.pause(); }
+  toggle(){ this.v.paused ? this.play() : this.pause(); }
+  seek(t){ try { this.v.currentTime = clamp(t, 0, this.dur || 0); } catch (e) {} }
+  step(n){ this.pause(); this.seek(this.v.currentTime + n / 30); }
+  toNorm(e){
+    const r = this.c.getBoundingClientRect(), s = Math.min(r.width / this.W, r.height / this.H);
+    const ox = (r.width - this.W * s) / 2, oy = (r.height - this.H * s) / 2;
+    const x = (e.clientX - r.left - ox) / (this.W * s), y = (e.clientY - r.top - oy) / (this.H * s);
+    return (x < 0 || y < 0 || x > 1 || y > 1) ? null : { x: +x.toFixed(4), y: +y.toFixed(4) };
+  }
+}
+
+/* ================= HOME ================= */
+let pendingTool = null;
+$('#goTracer').onclick = () => { roundCtx = null; gate('tracer'); };
+$('#goGallery').onclick = () => { pendingTool = null; gate('gallery'); };
+$$('.tile').forEach(b => b.onclick = () => {
+  const g = b.dataset.go;
+  if (g === 'shot') { roundCtx = null; gate('tracer'); }
+  else if (g === 'uhd') { roundCtx = null; quality = '4k'; saveQ(); gate('tracer'); }
+  else if (g === 'score') openRounds();
+  else { pendingTool = g; gate('gallery'); }
+});
+$('#gBack').onclick = () => { pendingTool = null; show('home'); refreshCount(); };
+$('#gToTracer').onclick = () => gate('tracer');
+$('#tBack').onclick = () => { if (offlineImport) { closeTracer(); pendingTool = null; openGallery(); return; } if (recording || mode === 'review') { toast('Stop and save or discard this recording first'); return; } closeTracer(); if (roundCtx) backToHole(); else { show('home'); refreshCount(); } };
+
+/* ================= PERMISSIONS ================= */
+const PKEY = 'mf-permissions';
+const getFlag = () => { try { return localStorage.getItem(PKEY); } catch (e) { return null; } };
+const setFlag = v => { try { localStorage.setItem(PKEY, v); } catch (e) {} };
+async function camState(){ try { if (navigator.permissions && navigator.permissions.query) return (await navigator.permissions.query({ name: 'camera' })).state; } catch (e) {} return 'prompt'; }
+async function stoState(){ try { if (navigator.storage && navigator.storage.persisted) return (await navigator.storage.persisted()) ? 'granted' : 'prompt'; } catch (e) {} return 'prompt'; }
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+function unblockHelp(){
+  return isIOS ? 'To turn it back on: open the iPhone Settings app → Safari → Camera → Allow, then reopen MAX TRACER.'
+    : 'To turn it back on: tap the icon left of the web address (or long-press the MAX TRACER app icon → App info) → Permissions → Camera → Allow, then reopen MAX TRACER.';
+}
+const plabel = st => st === 'granted' ? 'ALLOWED' : st === 'denied' ? 'BLOCKED' : 'NOT SET';
+let permTarget = null;
+async function showPerm(target){
+  permTarget = target;
+  const [c, st] = await Promise.all([camState(), stoState()]);
+  $('#pCam').dataset.s = c; $('#pCam').textContent = plabel(c);
+  const ss = st === 'granted' || getFlag() === 'allowed' ? 'granted' : getFlag() === 'denied' ? 'denied' : 'prompt';
+  $('#pSto').dataset.s = ss; $('#pSto').textContent = plabel(ss);
+  const b = $('#pBlocked'); if (c === 'denied') { b.textContent = 'Camera is blocked for MAX TRACER. ' + unblockHelp(); b.classList.remove('hide'); } else b.classList.add('hide');
+  $('#pAllow').textContent = target === 'tracer' ? 'Allow & open Tracer' : target === 'gallery' ? 'Allow & open Gallery' : 'Allow';
+  $('#perm').classList.add('on'); setTimeout(() => $('#pAllow').focus(), 50);
+}
+const hidePerm = () => $('#perm').classList.remove('on');
+async function gate(target){
+  const flag = getFlag(), c = await camState();
+  if (target === 'tracer') { if (c === 'granted' || (flag === 'allowed' && c !== 'denied')) openTracer(); else showPerm('tracer'); return; }
+  if (!flag) { showPerm('gallery'); return; }
+  openGallery();
+}
+$('#pAllow').onclick = async () => {
+  setFlag('allowed'); keepStorage();
+  const t = permTarget; hidePerm();
+  if (t === 'tracer') { openTracer(); return; }
+  try { const st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }); st.getTracks().forEach(x => x.stop()); toast('Camera & storage allowed'); }
+  catch (e) { toast('Camera not allowed — Tracer needs it'); }
+  if (t === 'gallery') openGallery();
+};
+$('#pDeny').onclick = () => { const t = permTarget; hidePerm(); if (t === 'tracer') { toast('Tracer needs the camera to work'); return; } setFlag('denied'); if (t === 'gallery') openGallery(); };
+$('#perm').addEventListener('click', e => { if (e.target.id === 'perm') hidePerm(); });
+$('#permLink').onclick = () => showPerm(null);
+function keepStorage(){ try { if (navigator.storage && navigator.storage.persist) navigator.storage.persisted().then(p => { if (!p) navigator.storage.persist(); }).catch(() => {}); } catch (e) {} }
+
+/* ================= TRACER ENGINE ================= */
+const video = $('#cam'), disp = $('#disp'), hud = $('#hud');
+const dctx = disp.getContext('2d'), hctx = hud.getContext('2d');
+const ana = document.createElement('canvas'), actx = ana.getContext('2d', { willReadFrequently: true });
+let stream = null, vw = 0, vh = 0, dw = 0, dh = 0, aw = 0, ah = 0, sc = 1;
+let offlineImport = false, importedReview = false, importUrl = null, importFile = null, importFinalizing = false, importStarted = false, importSeeking = false, importLoadFailed = false;
+let minCh = null, lastRGB = null, pool2 = [], mediaT = null, slowMo = false, quietSince = 0, slowRate = .25, lastMT = null;
+let mode = 'off', frameIdx = 0, ring = [], pool = [], visited = null, frameScheduled = false;
+const RING = 16;
+let fps = 30, lastNow = 0, lastT = -1;
+let cand = null, stable = 0, ball = null, flight = null, shotTime = null;
+let quality = (() => { try { return localStorage.getItem('mf-quality') || 'hd'; } catch (e) { return 'hd'; } })();
+const saveQ = () => { try { localStorage.setItem('mf-quality', quality); } catch (e) {} };
+function setStatus(s, text){ $('#pill').dataset.s = s; $('#status').textContent = text; }
+function updateQ(){ const l = $('#qLabel'); if (quality === '4k') { l.textContent = '4K'; l.classList.add('uhd'); } else if (quality === '1080-60') { l.textContent = '1080@60'; l.classList.remove('uhd'); } else { l.textContent = 'HD'; l.classList.remove('uhd'); } }
+
+async function openTracer(){
+  show('tracer'); $('#camErr').classList.add('hide'); updateQ(); $('#resBadge').textContent = '—';
+  const th = $('#tHole'); th.classList.toggle('hide', !roundCtx);
+  if (roundCtx && curRound) { $('#tHoleN').textContent = 'H' + roundCtx.hole; $('#tHoleP').textContent = 'PAR ' + curRound.pars[roundCtx.hole - 1]; }
+  setStatus('idle', 'Starting camera…');
+  const Q = quality === '4k' ? { w: 3840, h: 2160 } : { w: 1920, h: 1080 };
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: Q.w }, height: { ideal: Q.h }, frameRate: { ideal: 60 } } });
+  } catch (e) {
+    stream = null;
+    $('#camErrMsg').textContent = (e && e.name === 'NotAllowedError') ? 'Camera access is off. ' + unblockHelp()
+      : 'No camera could be started here. Open MAX TRACER in Safari (iPhone) or Chrome (Android) and allow camera access.';
+    $('#camErr').classList.remove('hide'); setStatus('idle', 'Camera unavailable'); return;
+  }
+  video.srcObject = stream;
+  try { await video.play(); } catch (e) {}
+  if (!video.videoWidth) await once(video, 'loadedmetadata');
+  setupDims();
+  const set = stream.getVideoTracks()[0].getSettings ? stream.getVideoTracks()[0].getSettings() : {};
+  $('#resBadge').textContent = `${Math.max(vw, vh)}p${set.frameRate ? ' · ' + Math.round(set.frameRate) : ''}`;
+  if (quality === '4k' && Math.max(vw, vh) < 3000) toast(`This phone gave ${Math.max(vw, vh)}p — 4K not available here`);
+  resetToSearch(); schedule();
+}
+$('#camRetry').onclick = openTracer;
+$('#tHole').onclick = () => { if (recording || mode === 'review') { toast('Stop and save or discard this recording first'); return; } closeTracer(); backToHole(); };
+$('#qBtn').onclick = () => {
+  if (mode !== 'search' && mode !== 'off') { toast('Reset the lock to change quality'); return; }
+  quality = quality === 'hd' ? '1080-60' : quality === '1080-60' ? '4k' : 'hd'; saveQ(); closeTracer(); openTracer();
+};
+function closeTracer(){
+  recording = false; resetZoom(); try { video.playbackRate = 1; } catch (e) {} slowMo = false;
+  stopRecording(true);
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  frameScheduled = false;
+  if (importUrl) { video.pause(); video.onended = null; video.removeAttribute('src'); try { video.load(); } catch (e) {} URL.revokeObjectURL(importUrl); importUrl = null; }
+  offlineImport = false; importedReview = false; importFile = null; importFinalizing = false; importStarted = false; importSeeking = false; importLoadFailed = false;
+  stream = null; mode = 'off'; flight = null; ball = null;
+  $('#sheet').classList.remove('on'); $('#importTools').classList.add('hide'); rvPlayer.unload();
+}
+function setupDims(){
+  vw = video.videoWidth; vh = video.videoHeight;
+  const ds = Math.min(1, (offlineImport ? 1920 : 1280) / Math.max(vw, vh)); dw = Math.round(vw * ds); dh = Math.round(vh * ds);
+  disp.width = hud.width = dw; disp.height = hud.height = dh;
+  sc = Math.min(1, (offlineImport ? 1280 : 800) / Math.max(vw, vh)); aw = Math.round(vw * sc); ah = Math.round(vh * sc);
+  ana.width = aw; ana.height = ah;
+  pool = []; pool2 = []; for (let i = 0; i < RING; i++) { pool.push(new Uint8Array(aw * ah)); pool2.push(new Uint8Array(aw * ah)); }
+  ring = []; visited = new Uint8Array(aw * ah); minCh = pool2[0]; lastRGB = null; frameIdx = 0;
+}
+function schedule(){
+  if (!stream || frameScheduled) return;
+  frameScheduled = true;
+  if (video.requestVideoFrameCallback) video.requestVideoFrameCallback((t, meta) => { frameScheduled = false; if (!stream) return; mediaT = meta && Number.isFinite(meta.mediaTime) ? meta.mediaTime : null; guardDrops(); onFrame(); mediaT = null; schedule(); });
+  else requestAnimationFrame(() => { frameScheduled = false; if (!stream) return; if (video.currentTime !== lastT) { lastT = video.currentTime; onFrame(); } schedule(); });
+}
+function grab(now){
+  actx.drawImage(video, 0, 0, aw, ah);
+  const d = actx.getImageData(0, 0, aw, ah).data, g = pool[frameIdx % RING]; minCh = pool2[frameIdx % RING];
+  for (let i = 0, j = 0; i < g.length; i++, j += 4) { const R = d[j], G = d[j+1], B = d[j+2]; g[i] = (R * 77 + G * 150 + B * 29) >> 8; minCh[i] = R < G ? (R < B ? R : B) : (G < B ? G : B); }
+  lastRGB = d;
+  ring.push({ f: frameIdx, gray: g, mn: minCh, now }); if (ring.length > RING - 1) ring.shift();
+  return g;
+}
+const frameAt = f => ring.find(e => e.f === f);
+function onFrame(){
+  if (video.videoWidth !== vw || video.videoHeight !== vh) { setupDims(); resetToSearch(); }
+  const wallNow = performance.now();
+  if (lastNow && !offlineImport) { const dt = wallNow - lastNow; if (dt > 4 && dt < 120) fps = clamp(fps * .9 + (1000 / dt) * .1, 15, 120); }
+  lastNow = wallNow;
+  const now = offlineImport ? (mediaT != null ? mediaT : video.currentTime) * 1000 : wallNow;
+  const f = frameIdx, g = grab(now);
+  dctx.drawImage(video, 0, 0, dw, dh);
+  if (mode === 'search') { if (f % 2 === 0) updateCandidate(searchBall()); }
+  else if (mode === 'locked' && (recording || (offlineImport && importStarted))) { if (offlineImport) slowMoControl(f, now); checkImpact(g, f); }
+  else if (mode === 'flight') {
+    if (flight.phase === 'acquire' || flight.phase === 'track') { flightStep(f); if ((flight.phase === 'acquire' || flight.phase === 'track') && now - flight.pts[0].now > 7000) endFlight(); }
+    else if (flight.phase === 'extrap') extrapStep();
+    // Keep the recording running until Stop is pressed.
+  }
+  if (flight && flight.pts.length > 1) drawRibbon(dctx, flight.pts.map(p => [p.x / aw * dw, p.y / ah * dh]), COLORS.green, Math.min(dw, dh) * .0115, mode === 'flight' && flight.phase !== 'hold');
+  drawHud(wallNow);
+  if (offlineImport) {
+    if (!importSeeking) $('#importSeek').value = video.currentTime || 0;
+    $('#importTime').textContent = `${fmtClock(video.currentTime || 0)} / ${fmtClock(video.duration || 0)}`;
+    $('#importPlay').textContent = video.paused ? 'Preview' : 'Pause preview';
+  }
+  frameIdx++;
+  if (offlineImport && mode === 'flight' && flight?.phase === 'hold' && !importFinalizing) finishImportedVideo('tracked');
+}
+
+/* blob finder */
+const stack = [];
+function blobs(x0, y0, x1, y1, test, maxArea){
+  x0 = Math.max(0, x0 | 0); y0 = Math.max(0, y0 | 0); x1 = Math.min(aw - 1, x1 | 0); y1 = Math.min(ah - 1, y1 | 0);
+  const out = []; if (x1 < x0 || y1 < y0) return out;
+  for (let y = y0; y <= y1; y++) visited.fill(0, y * aw + x0, y * aw + x1 + 1);
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    const i = y * aw + x; if (visited[i]) continue; visited[i] = 1; if (!test(i)) continue;
+    let area = 0, sx = 0, sy = 0, sxx = 0, syy = 0, sxy = 0, minx = x, maxx = x, miny = y, maxy = y;
+    stack.length = 0; stack.push(i);
+    while (stack.length) {
+      const k = stack.pop(), kx = k % aw, ky = (k - kx) / aw;
+      area++; sx += kx; sy += ky; sxx += kx * kx; syy += ky * ky; sxy += kx * ky;
+      if (kx < minx) minx = kx; if (kx > maxx) maxx = kx; if (ky < miny) miny = ky; if (ky > maxy) maxy = ky;
+      let n;
+      if (kx > x0 && !visited[n = k - 1]) { visited[n] = 1; if (test(n)) stack.push(n); }
+      if (kx < x1 && !visited[n = k + 1]) { visited[n] = 1; if (test(n)) stack.push(n); }
+      if (ky > y0 && !visited[n = k - aw]) { visited[n] = 1; if (test(n)) stack.push(n); }
+      if (ky < y1 && !visited[n = k + aw]) { visited[n] = 1; if (test(n)) stack.push(n); }
+    }
+    if (area > maxArea) continue;
+    const cx = sx / area, cy = sy / area;
+    out.push({ area, cx, cy, minx, maxx, miny, maxy, vxx: sxx / area - cx * cx, vyy: syy / area - cy * cy, vxy: sxy / area - cx * cy });
+  }
+  return out;
+}
+function principal(b){
+  const tr = b.vxx + b.vyy, det = b.vxx * b.vyy - b.vxy * b.vxy, disc = Math.sqrt(Math.max(0, tr * tr / 4 - det));
+  const l1 = tr / 2 + disc, l2 = Math.max(.25, tr / 2 - disc);
+  let ux = 1, uy = 0;
+  if (Math.abs(b.vxy) > 1e-6) { ux = l1 - b.vyy; uy = b.vxy; const m = Math.hypot(ux, uy); ux /= m; uy /= m; } else if (b.vyy > b.vxx) { ux = 0; uy = 1; }
+  return { ux, uy, elong: Math.sqrt(Math.max(l1, .25) / l2) };
+}
+function contrastAt(g, cx, cy, r){
+  let ds = 0, dn = 0, rs = 0, rn = 0; const R2 = r * 2.6, r1 = r * 1.7, ir = Math.ceil(R2), x0 = Math.round(cx), y0 = Math.round(cy);
+  for (let dy = -ir; dy <= ir; dy++) { const y = y0 + dy; if (y < 0 || y >= ah) continue;
+    for (let dx = -ir; dx <= ir; dx++) { const x = x0 + dx; if (x < 0 || x >= aw) continue;
+      const d = Math.hypot(x - cx, y - cy), v = g[y * aw + x];
+      if (d <= r * .9) { ds += v; dn++; } else if (d >= r1 && d <= R2) { rs += v; rn++; } } }
+  const disk = dn ? ds / dn : 0, rg = rn ? rs / rn : 0;
+  return { disk, ring: rg, rel: (disk - rg) / Math.max(disk, 1) };
+}
+/* Ball finder v2: a golf ball is WHITE (all three channels high), sits on the GROUND
+   (below the sky line in its column), is surrounded by grass/turf/dirt (not sky or leaves
+   with sky gaps), and is small and round. Sky gaps in trees are blue or sit above the
+   horizon, so they are rejected before scoring. */
+function pix(i){ const j = i * 4, d = lastRGB; return [d[j], d[j+1], d[j+2]]; }
+const isSky = (R, G, B) => (B > R + 22 && B >= G - 4 && B > 110) || (R > 215 && G > 215 && B > 215 && B >= R);
+function skyLine(){
+  // Lowest sky pixel per vertical strip = where the ground can start in that strip.
+  const bins = 32, bw = aw / bins, out = new Float32Array(bins).fill(-1);
+  for (let y = 0; y < ah; y += 2) for (let x = 0; x < aw; x += 2) {
+    const [R, G, B] = pix(y * aw + x); if (!isSky(R, G, B)) continue;
+    const k = Math.min(bins - 1, (x / bw) | 0); if (y > out[k]) out[k] = y;
+  }
+  // Ignore isolated bright specks low in the frame: a strip's sky line can't sit far below its neighbours' median.
+  const med = [...out].filter(v => v >= 0).sort((p, q) => p - q), m = med.length ? med[med.length >> 1] : 0;
+  for (let k = 0; k < bins; k++) if (out[k] > m + ah * .12) out[k] = Math.max(m, ...[out[k-1] ?? -1, out[k+1] ?? -1].filter(v => v <= m + ah * .12));
+  return { out, bw, bins };
+}
+function ringColors(cx, cy, r){
+  let n = 0, dark = 0, ground = 0, white = 0, dn = 0, blueDisk = 0, satDisk = 0;
+  const R1 = r * 1.8, R2 = r * 3.2, ir = Math.ceil(R2), x0 = Math.round(cx), y0 = Math.round(cy);
+  for (let dy = -ir; dy <= ir; dy++) { const y = y0 + dy; if (y < 0 || y >= ah) continue;
+    for (let dx = -ir; dx <= ir; dx++) { const x = x0 + dx; if (x < 0 || x >= aw) continue;
+      const d = Math.hypot(dx, dy), [R, G, B] = pix(y * aw + x), mx = Math.max(R, G, B), mn = Math.min(R, G, B), sat = (mx - mn) / Math.max(mx, 1);
+      if (d <= r * .8) { dn++; if (B > R + 18) blueDisk++; if (sat > .32) satDisk++; }
+      else if (d >= R1 && d <= R2) { n++;
+        if (mx < 75 || (B > R + 15 && mx < 150)) dark++; // clubhead, shaft, shadow, sky reflected in metal
+        else if ((G >= R - 6 && G > B + 6) || (R >= G && G > B && sat < .55)) ground++; // grass, turf, dirt, sand
+        if (mn > 200 && sat < .15) white++;
+      } } }
+  const lit = n - dark;
+  return { dark: n ? dark / n : 0, ground: lit > n * .35 ? ground / lit : .5, white: n ? white / n : 1, blue: dn ? blueDisk / dn : 1, sat: dn ? satDisk / dn : 1 };
+}
+function searchBall(){
+  if (!lastRGB) return null;
+  const g = minCh, H = skyLine(), y0 = Math.floor(ah * .25); let s = 0, s2 = 0, n = 0;
+  for (let y = y0; y < ah; y += 3) for (let x = 0; x < aw; x += 3) { const v = g[y * aw + x]; s += v; s2 += v * v; n++; }
+  const mean = s / n, sd = Math.sqrt(Math.max(0, s2 / n - mean * mean)), thr = Math.min(225, Math.max(130, mean + 2.4 * sd));
+  const rMax = Math.max(4, Math.min(aw, ah) * .03), aMax = Math.PI * rMax * rMax * 1.3;
+  let best = null, bs = -1;
+  for (const b of blobs(0, y0, aw - 1, ah - 1, i => g[i] > thr, aMax)) {
+    if (b.area < 3) continue;
+    const bw = b.maxx - b.minx + 1, bh = b.maxy - b.miny + 1;
+    if (Math.max(bw, bh) / Math.min(bw, bh) > 1.7) continue;
+    const fill = b.area / (bw * bh); if (fill < .5) continue;
+    const r = Math.max(1.5, Math.sqrt(b.area / Math.PI));
+    // Must be below the sky line of its strip (not in a tree or on the horizon).
+    const k = Math.min(H.bins - 1, (b.cx / H.bw) | 0), sl = Math.max(H.out[k], H.out[k-1] ?? -1, H.out[k+1] ?? -1);
+    if (b.cy < sl + r * 3 + ah * .02) continue;
+    const c = contrastAt(g, b.cx, b.cy, r); if (c.rel < .2) continue;
+    const col = ringColors(b.cx, b.cy, r);
+    if (col.blue > .25 || col.sat > .35 || col.white > .35) continue; // sky gap, coloured object, big white thing
+    if (col.ground < .35 && col.dark < .3) continue; // must sit on ground, or tucked against the dark clubhead / in shadow
+    const yN = b.cy / ah, xN = b.cx / aw;
+    const score = fill * .6 + c.rel * 1.6 + col.ground * .8
+      + Math.max(0, c.disk - 150) / 70                // whiter is better: a ball out-whites divots and dirt
+      + Math.min(1, col.dark * 3) * .6                // a ball at address sits right next to the dark clubhead
+      + Math.exp(-((yN - .68) ** 2) / .03) * .8      // ball usually sits in the lower-middle band
+      + Math.exp(-((xN - .5) ** 2) / .08) * .5       // and near the horizontal middle
+      + Math.min(r, 6) / 20;
+    if (score > bs) { bs = score; best = { x: b.cx, y: b.cy, r, score, bb: [b.minx, b.miny, b.maxx, b.maxy] }; }
+  }
+  return best && best.score > 1.6 ? refinePeak(best) : null;
+}
+// Snap to the ball's own bright core. A ball touching the club's shiny crown merges into one blob
+// whose centre sits between them; the whitest point + its half-max area is the ball itself.
+function refinePeak(c){
+  const g = minCh, S = Math.ceil(Math.max(3, c.r * 1.5)), bb = c.bb || [c.x - S, c.y - S, c.x + S, c.y + S]; let mx = -1, px = Math.round(c.x), py = Math.round(c.y);
+  for (let y = Math.max(0, Math.round(bb[1]) - 1); y <= Math.min(ah - 1, Math.round(bb[3]) + 1); y++)
+    for (let x = Math.max(0, Math.round(bb[0]) - 1); x <= Math.min(aw - 1, Math.round(bb[2]) + 1); x++) { const v = g[y * aw + x]; if (v > mx) { mx = v; px = x; py = y; } }
+  const w = whitePeak(g, px, py, 1.5), half = (mx + w.bg) / 2; let sx = 0, sy = 0, sw = 0, n = 0;
+  for (let y = Math.max(0, py - 4); y <= Math.min(ah - 1, py + 4); y++) for (let x = Math.max(0, px - 4); x <= Math.min(aw - 1, px + 4); x++) {
+    const v = g[y * aw + x]; if (v < half || Math.hypot(x - px, y - py) > 4) continue; const k = v - half; sx += x * k; sy += y * k; sw += k; n++; }
+  if (!sw) return c;
+  return { x: sx / sw, y: sy / sw, r: clamp(Math.sqrt(n / Math.PI), 1.5, Math.max(1.5, c.r)), score: c.score };
+}
+function updateCandidate(c){
+  if (c && cand && Math.hypot(c.x - cand.x, c.y - cand.y) < Math.max(3, c.r)) { stable++; cand = c; } else { cand = c; stable = c ? 1 : 0; }
+  if (cand && ((offlineImport && video.paused) || stable >= Math.round(fps * .7))) lock(cand);
+  else setStatus('search', cand ? (offlineImport ? 'Ball spotted — tap it if needed' : 'Ball spotted — hold steady or tap it') : (offlineImport ? 'Scanning video for the ball… tap it to lock manually' : 'Searching for a ball… tap to lock manually'));
+}
+// Paused imported clip: re-read the exact frame on screen so the lock uses what the user is looking at.
+function refreshStill(){
+  if (!offlineImport || !video.paused || !ring.length || !video.videoWidth) return;
+  const e = ring[ring.length - 1]; actx.drawImage(video, 0, 0, aw, ah);
+  const d = actx.getImageData(0, 0, aw, ah).data, g = e.gray, m = e.mn;
+  for (let i = 0, j = 0; i < g.length; i++, j += 4) { const R = d[j], G = d[j+1], B = d[j+2]; g[i] = (R * 77 + G * 150 + B * 29) >> 8; m[i] = R < G ? (R < B ? R : B) : (G < B ? G : B); }
+  lastRGB = d; minCh = m; dctx.drawImage(video, 0, 0, dw, dh);
+}
+// Lock where the finger landed. Only fine-tunes onto the ball's white core inside a finger-sized
+// circle (smaller the more you zoom) — it never jumps to some other bright spot in the frame.
+function lockAtTap(ax, ay, Wa){
+  const e = ring[ring.length - 1]; if (!e) return false;
+  const mn = e.mn, W = clamp(Wa, 2, 40), x0 = Math.max(0, Math.floor(ax - W)), x1 = Math.min(aw - 1, Math.ceil(ax + W)), y0 = Math.max(0, Math.floor(ay - W)), y1 = Math.min(ah - 1, Math.ceil(ay + W));
+  let best = -1e9, px = Math.round(ax), py = Math.round(ay); const vals = [];
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    const dd = Math.hypot(x - ax, y - ay); if (dd > W) continue;
+    const v = mn[y * aw + x]; vals.push(v); const sc2 = v - dd * (40 / W); if (sc2 > best) { best = sc2; px = x; py = y; }
+  }
+  if (!vals.length) return false;
+  vals.sort((p, q) => p - q); const bg = vals[Math.floor(vals.length * .4)], pk = mn[py * aw + px];
+  if (pk - bg < 18) { lock({ x: ax, y: ay, r: clamp(W * .3, 1.5, 4) }, true); return true; }   // nothing ball-like: trust the finger
+  const half = (pk + bg) / 2, R = Math.min(W, 6); let sx = 0, sy = 0, sw = 0, n = 0;
+  for (let y = Math.max(0, py - R); y <= Math.min(ah - 1, py + R); y++) for (let x = Math.max(0, px - R); x <= Math.min(aw - 1, px + R); x++) {
+    const v = mn[y * aw + x]; if (v < half || Math.hypot(x - px, y - py) > R) continue; const k = v - half; sx += x * k; sy += y * k; sw += k; n++;
+  }
+  const cx = sw ? sx / sw : px, cy = sw ? sy / sw : py;
+  lock({ x: cx, y: cy, r: clamp(Math.sqrt(n / Math.PI), 1.5, 6) }, true); return true;
+}
+function lock(c, manual){
+  const g = ring[ring.length - 1].gray, cr = contrastAt(g, c.x, c.y, c.r), tpl = [], R = Math.ceil(c.r);
+  for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+    if (dx * dx + dy * dy > c.r * c.r) continue;
+    const x = Math.round(c.x) + dx, y = Math.round(c.y) + dy;
+    if (x >= 0 && y >= 0 && x < aw && y < ah) tpl.push(dx, dy, g[y * aw + x]);
+  }
+  const wp = whitePeak(ring[ring.length - 1].mn, c.x, c.y, c.r);
+  ball = { x: c.x, y: c.y, r: c.r, rel0: cr.rel, tpl, base: 6, run: 0, start: 0, pk0: wp.pk, bg0: wp.bg, wOK: wp.pk - wp.bg >= 30, manual: !!manual };
+  mode = 'locked'; cand = null; stable = 0;
+  if (offlineImport) $('#tStart').classList.add('hot');
+  setStatus('locked', manual ? 'Locked where you tapped — press Start' : offlineImport ? 'Ball locked — tap the ball to correct, then Start' : 'Ball locked — press Start');
+  if (offlineImport && !importStarted) {
+    video.pause();
+    $('#tStart').disabled = false; $('#tStart').classList.remove('hide');
+    $('#importHelp').textContent = 'Ball locked. Check the ring, adjust the frame if needed, then tap Start to play and trace.';
+    $('#importPlay').textContent = 'Preview';
+  } else $('#tStart').disabled = false;
+  if (navigator.vibrate) navigator.vibrate(25);
+}
+/* ---------- pinch-zoom / pan / tap-to-lock ----------
+   Pinch to zoom (up to 8x), drag with one finger to pan while zoomed, tap to lock the ball.
+   Zoom snaps back to fit when Start is pressed. */
+const zoom = { z: 1, tx: 0, ty: 0, pts: new Map(), pinch: null, pan: null, tap: null };
+const zoomable = () => mode === 'search' || mode === 'locked';
+function applyZoom(){
+  const t = zoom.z <= 1.001 ? '' : `translate(${zoom.tx}px,${zoom.ty}px) scale(${zoom.z})`;
+  disp.style.transform = hud.style.transform = t;
+  $('#zoomFit').classList.toggle('hide', zoom.z <= 1.001); $('#zoomLvl').textContent = zoom.z.toFixed(1) + '×';
+  if (dw && (mode === 'search' || mode === 'locked')) drawHud(performance.now());
+}
+function clampZoom(){
+  const W = hud.offsetWidth, H = hud.offsetHeight;
+  zoom.z = clamp(zoom.z, 1, 8); zoom.tx = clamp(zoom.tx, W * (1 - zoom.z), 0); zoom.ty = clamp(zoom.ty, H * (1 - zoom.z), 0);
+}
+function resetZoom(){ zoom.z = 1; zoom.tx = zoom.ty = 0; zoom.pinch = zoom.pan = zoom.tap = null; zoom.pts.clear(); applyZoom(); }
+$('#zoomFit').onclick = resetZoom;
+function zoomOn(z){
+  const W = hud.offsetWidth, H = hud.offsetHeight, s = Math.min(W / dw, H / dh), ox = (W - dw * s) / 2, oy = (H - dh * s) / 2;
+  const t = (mode === 'locked' && ball) ? ball : cand;
+  const cx = t ? ox + t.x / aw * dw * s : W / 2, cy = t ? oy + t.y / ah * dh * s : H * .65;
+  zoom.z = z; zoom.tx = W / 2 - cx * z; zoom.ty = H / 2 - cy * z; clampZoom(); applyZoom();
+}
+$('#tZoom').onclick = () => { if (!zoomable()) return; zoomOn(zoom.z < 2 ? 3 : zoom.z < 5 ? 6 : 1); if (zoom.z <= 1.001) resetZoom(); };
+function localXY(ev){ const r = hud.parentElement.getBoundingClientRect(); return { x: ev.clientX - r.left, y: ev.clientY - r.top }; }
+function tapLock(ev){
+  const r = hud.getBoundingClientRect(), s = Math.min(r.width / dw, r.height / dh); // r already includes zoom
+  const ox = (r.width - dw * s) / 2, oy = (r.height - dh * s) / 2;
+  const x = (ev.clientX - r.left - ox) / s, y = (ev.clientY - r.top - oy) / s;
+  if (x < 0 || y < 0 || x > dw || y > dh) return;
+  if (mode === 'locked' && recording) { toast('Press Stop before changing the lock'); return; }
+  refreshStill();
+  const Wa = (16 / s) * (aw / dw);   // ~16 screen px of finger tolerance, in analysis pixels
+  if (mode === 'locked') mode = 'search';
+  lockAtTap(x / dw * aw, y / dh * ah, Wa);
+  drawHud(performance.now());
+}
+hud.addEventListener('pointerdown', ev => {
+  if (!zoomable()) return;
+  try { hud.setPointerCapture(ev.pointerId); } catch (e) {}
+  const p = localXY(ev); zoom.pts.set(ev.pointerId, p);
+  if (zoom.pts.size === 2) {
+    const [a, b] = [...zoom.pts.values()], mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    zoom.pinch = { d0: Math.max(10, Math.hypot(a.x - b.x, a.y - b.y)), z0: zoom.z, cx: (mid.x - zoom.tx) / zoom.z, cy: (mid.y - zoom.ty) / zoom.z };
+    zoom.tap = null; zoom.pan = null;
+  } else if (zoom.pts.size === 1) {
+    zoom.tap = { x: p.x, y: p.y, t: performance.now() };
+    zoom.pan = { x: p.x, y: p.y, tx: zoom.tx, ty: zoom.ty };
+  }
+});
+hud.addEventListener('pointermove', ev => {
+  if (!zoom.pts.has(ev.pointerId)) return;
+  const p = localXY(ev); zoom.pts.set(ev.pointerId, p);
+  if (zoom.pinch && zoom.pts.size >= 2) {
+    const [a, b] = [...zoom.pts.values()], mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    zoom.z = zoom.pinch.z0 * Math.hypot(a.x - b.x, a.y - b.y) / zoom.pinch.d0;
+    zoom.z = clamp(zoom.z, 1, 8);
+    zoom.tx = mid.x - zoom.pinch.cx * zoom.z; zoom.ty = mid.y - zoom.pinch.cy * zoom.z;
+    clampZoom(); applyZoom(); return;
+  }
+  if (zoom.tap && Math.hypot(p.x - zoom.tap.x, p.y - zoom.tap.y) > 18) zoom.tap = null; // it's a drag, not a tap
+  if (zoom.pan && !zoom.tap && zoom.z > 1.001) { zoom.tx = zoom.pan.tx + p.x - zoom.pan.x; zoom.ty = zoom.pan.ty + p.y - zoom.pan.y; clampZoom(); applyZoom(); }
+});
+function endPointer(ev){
+  if (!zoom.pts.has(ev.pointerId)) return;
+  zoom.pts.delete(ev.pointerId);
+  if (zoom.pts.size < 2 && zoom.pinch) { zoom.pinch = null; zoom.tap = null; if (zoom.z < 1.05) resetZoom(); const rest = [...zoom.pts.values()][0]; zoom.pan = rest ? { x: rest.x, y: rest.y, tx: zoom.tx, ty: zoom.ty } : null; return; }
+  if (ev.type === 'pointerup' && zoom.tap && performance.now() - zoom.tap.t < 900 && zoomable()) tapLock(ev);
+  zoom.tap = null; if (!zoom.pts.size) zoom.pan = null;
+}
+hud.addEventListener('pointerup', endPointer);
+hud.addEventListener('pointercancel', endPointer);
+function templateDiff(g){
+  let best = 1e9;
+  for (let oy = -2; oy <= 2; oy++) for (let ox = -2; ox <= 2; ox++) {
+    let s = 0, n = 0; const bx = Math.round(ball.x) + ox, by = Math.round(ball.y) + oy;
+    for (let k = 0; k < ball.tpl.length; k += 3) { const x = bx + ball.tpl[k], y = by + ball.tpl[k+1]; if (x < 0 || y < 0 || x >= aw || y >= ah) continue; s += Math.abs(g[y * aw + x] - ball.tpl[k+2]); n++; }
+    if (n) best = Math.min(best, s / n);
+  }
+  return best;
+}
+/* ================= TRACKING ENGINE v3 =================
+   Works in the WHITENESS channel (the darkest of R,G,B per pixel). A white ball is bright in
+   all three channels; sky (low red), grass/trees (low red+blue), the clubhead, shaft, arms and
+   shadows are all dark there. So the ball pops out and the moving club almost vanishes.
+   1. Impact = the ball's white peak disappears from its locked spot for several frames.
+   2. Launch = a "track-before-detect" search: 3 candidates in successive frames that move in a
+      straight line at a steady speed AND point back to where the ball was. Club, glove, shoes
+      and body motion can't satisfy all of that at once.
+   3. Flight = predict (constant-acceleration fit) -> gate -> pick the whitest mover near the
+      prediction; ride out short gaps; then a gravity-bounded fit carries it to landing.
+   Imported clips drop to 0.25x speed once the swing starts so every single frame is analysed. */
+function whitePeak(mn, x, y, r){
+  if (!mn) return { pk: 0, bg: 0 };
+  const R = Math.max(2, Math.ceil(r + 1.5)), x0 = Math.round(x), y0 = Math.round(y);
+  let pk = 0, s = 0, n = 0;
+  for (let dy = -R; dy <= R; dy++) { const yy = y0 + dy; if (yy < 0 || yy >= ah) continue;
+    for (let dx = -R; dx <= R; dx++) { const xx = x0 + dx; if (xx < 0 || xx >= aw) continue; const v = mn[yy * aw + xx]; if (v > pk) pk = v; } }
+  const R1 = Math.max(R + 2, r * 2.5), R2 = Math.max(R1 + 3, r * 4), I = Math.ceil(R2);
+  for (let dy = -I; dy <= I; dy++) { const yy = y0 + dy; if (yy < 0 || yy >= ah) continue;
+    for (let dx = -I; dx <= I; dx++) { const d = Math.hypot(dx, dy); if (d < R1 || d > R2) continue; const xx = x0 + dx; if (xx < 0 || xx >= aw) continue; s += mn[yy * aw + xx]; n++; } }
+  return { pk, bg: n ? s / n : 0 };
+}
+function checkImpact(g, f){
+  const e = frameAt(f); let miss;
+  if (ball.wOK && e && e.mn) { const w = whitePeak(e.mn, ball.x, ball.y, ball.r); miss = w.pk < ball.bg0 + (ball.pk0 - ball.bg0) * .55; }
+  else if (ball.rel0 >= .12) { let best = -1; for (let oy = -2; oy <= 2; oy++) for (let ox = -2; ox <= 2; ox++) best = Math.max(best, contrastAt(g, ball.x + ox, ball.y + oy, ball.r).rel); miss = best < ball.rel0 * .45; }
+  else { const td = templateDiff(g); miss = td > Math.max(28, ball.base * 3 + 8); if (!miss) ball.base = ball.base * .9 + td * .1; }
+  if (miss) { if (!ball.run) ball.start = f; ball.run++; } else ball.run = 0;
+  if (ball.run >= Math.max(3, Math.round(fps * .05))) beginFlight(ball.start);
+}
+// Imported clips: play normally until the club moves near the ball, then 0.25x so no frame is skipped.
+function slowMoControl(f, now){
+  const c = frameAt(f), p = frameAt(f - 1); if (!c || !p) return;
+  const Rm = Math.round(Math.min(aw, ah) * .2), x0 = Math.max(0, Math.round(ball.x - Rm)), x1 = Math.min(aw - 1, Math.round(ball.x + Rm)), y0 = Math.max(0, Math.round(ball.y - Rm)), y1 = Math.min(ah - 1, Math.round(ball.y + Rm * .6));
+  let moving = 0, n = 0;
+  for (let y = y0; y <= y1; y += 2) for (let x = x0; x <= x1; x += 2) { const i = y * aw + x; n++; if (Math.abs(c.gray[i] - p.gray[i]) > 25) moving++; }
+  const active = moving > n * .004;
+  if (active) { quietSince = now; if (!slowMo) { slowMo = true; video.playbackRate = slowRate; setStatus('flight', 'Swing detected — analysing every frame'); } }
+  else if (slowMo && now - quietSince > 1500) { slowMo = false; video.playbackRate = 1; setStatus('locked', 'Ready — tracing as video plays'); }
+}
+function setSlow(on){ slowMo = on; try { video.playbackRate = on ? slowRate : 1; } catch (e) {} }
+// If the phone can't decode fast enough and skips frames during the swing or flight, slow playback down further.
+function guardDrops(){
+  if (!offlineImport || !importStarted || mediaT == null) { lastMT = null; return; }
+  if (lastMT != null && (slowMo || mode === 'flight')) {
+    const gap = Math.round((mediaT - lastMT) * fps);
+    if (gap > 1 && slowRate > .07) { slowRate = Math.max(.0625, slowRate / 2); try { video.playbackRate = slowRate; } catch (e) {} }
+  }
+  lastMT = mediaT;
+}
+// Pixels that are whiter NOW than 1 and 2 frames ago: where a white ball has just arrived.
+function whiteMover(f){
+  const c = frameAt(f), p = frameAt(f - 1), q = frameAt(f - 2); if (!c || !p) return null;
+  const cm = c.mn, pm = p.mn, qm = q ? q.mn : null, DT = 16;
+  return qm ? (i => cm[i] - pm[i] > DT && cm[i] - qm[i] > DT) : (i => cm[i] - pm[i] > DT);
+}
+// Local contrast in the whiteness channel: blob peak vs the 40th-percentile of a ring around it.
+// A real ball is a white dot on a darker background; the "ghost" a dark club leaves behind is just sky/grass.
+const lcBuf = [];
+function localContrast(mn, b){
+  const r = Math.min(4, Math.max(1.5, Math.sqrt(b.area / Math.PI))); let pk = 0;
+  for (let y = b.miny; y <= b.maxy; y++) for (let x = b.minx; x <= b.maxx; x++) { const v = mn[y * aw + x]; if (v > pk) pk = v; }
+  const R1 = Math.max(r * 2.5, (Math.max(b.maxx - b.minx, b.maxy - b.miny) + 1) / 2 + 3), R2 = R1 + 4; lcBuf.length = 0;
+  for (let k = 0; k < 24; k++) { const a = k / 24 * Math.PI * 2; for (const rr of [R1, R2]) { const x = Math.round(b.cx + Math.cos(a) * rr), y = Math.round(b.cy + Math.sin(a) * rr); if (x >= 0 && y >= 0 && x < aw && y < ah) lcBuf.push(mn[y * aw + x]); } }
+  if (!lcBuf.length) return 0; lcBuf.sort((p, q) => p - q); return pk - lcBuf[Math.floor(lcBuf.length * .4)];
+}
+function liftOf(b, f){
+  const c = frameAt(f), p = frameAt(f - 1); if (!c || !p) return 0; let s = 0, n = 0;
+  for (let y = b.miny; y <= b.maxy; y++) for (let x = b.minx; x <= b.maxx; x++) { const i = y * aw + x; s += c.mn[i] - p.mn[i]; n++; }
+  return n ? s / n : 0;
+}
+function beginFlight(f0){
+  shotTime = new Date();
+  // Flight maths runs on real time (in frame units), so dropped frames can't bend the curve.
+  const fr = frameAt(f0), R = Math.max(1.5, ball.r), t0 = fr ? fr.now * fps / 1000 : 0;
+  flight = { pts: [{ x: ball.x, y: ball.y, f: t0 - .5, now: fr ? fr.now - 500 / fps : performance.now() }], f0, t0, phase: 'acquire', cands: [], startNow: performance.now(), R };
+  mode = 'flight'; setStatus('flight', 'Impact — finding the ball…');
+  if (offlineImport) setSlow(true);
+  $('#tEnd').classList.remove('hide'); $('#tReset').classList.add('hide'); $('#tZoom').classList.add('hide');
+  for (const e of ring.slice()) { if (e.f < f0) continue; flightStep(e.f); if (flight.phase !== 'acquire' && flight.phase !== 'track') break; }
+}
+function flightStep(f){
+  if (flight.lastF != null && f <= flight.lastF) return; flight.lastF = f;
+  const e = frameAt(f); if (!e) return;
+  if (flight.phase === 'acquire') acquireStep(f, e.now); else trackStep2(f, e.now);
+}
+function acquireStep(f, now){
+  const m = whiteMover(f), R = flight.R, tf = now * fps / 1000; if (!m) return;
+  const W = aw * .45, list = [];
+  for (const b of blobs(ball.x - W, 0, ball.x + W, Math.min(ah - 1, ball.y + R * 4), m, 6000)) {
+    if (b.area < 2) continue;
+    const d = Math.hypot(b.cx - ball.x, b.cy - ball.y); if (d < R * 2.2) continue;
+    const lc = localContrast(frameAt(f).mn, b); if (lc < 18) continue;
+    list.push({ x: b.cx, y: b.cy, a: b.area, f: tf, now, lift: liftOf(b, f) + lc * .5 });
+  }
+  list.sort((p, q) => q.lift * Math.sqrt(q.a) - p.lift * Math.sqrt(p.a)); list.length = Math.min(list.length, 25);
+  flight.cands.push({ f: tf, list }); if (flight.cands.length > 8) flight.cands.shift();
+  const best = bestLaunch();
+  if (best) {
+    flight.pts.push(...best.map(c => ({ x: c.x, y: c.y, f: c.f, now: c.now })));
+    flight.phase = 'track'; setStatus('flight', 'Tracking the ball…');
+    return;
+  }
+  if (tf - flight.t0 > Math.max(12, Math.round(fps * .4))) {
+    // No launch found. If the ball is still sitting there it was a waggle / occlusion: re-arm.
+    const w = whitePeak(frameAt(f).mn, ball.x, ball.y, ball.r);
+    if (ball.wOK && w.pk >= ball.bg0 + (ball.pk0 - ball.bg0) * .55) { flight = null; mode = 'locked'; ball.run = 0; $('#tEnd').classList.toggle('hide', !recording && !(offlineImport && importStarted)); setStatus('locked', 'Ball still there — waiting for the shot'); return; }
+    endFlight();
+  }
+}
+// Track-before-detect: best (a,b,c) over 3 frames — straight, steady speed, pointing back at the ball.
+function bestLaunch(){
+  const C = flight.cands, R = flight.R; let best = null, bs = -1e9;
+  for (let i = 0; i < C.length; i++) for (const a of C[i].list)
+    for (let j = i + 1; j < C.length && C[j].f - C[i].f <= 3; j++) for (const b of C[j].list) {
+      const dfab = b.f - a.f, vx = (b.x - a.x) / dfab, vy = (b.y - a.y) / dfab, sp = Math.hypot(vx, vy);
+      if (sp < 1.2) continue;
+      // must be moving away from the ball, and the line must pass back through the ball
+      const ax = a.x - ball.x, ay = a.y - ball.y, along = (ax * vx + ay * vy) / sp; if (along <= 0) continue;
+      const perp = Math.abs(ax * vy - ay * vx) / sp; if (perp > Math.max(6, R * 3, sp * .35)) continue;
+      // time to have travelled from the ball must fit the frames since impact
+      const tBack = along / sp, sinceImpact = a.f - flight.t0 + 1; if (tBack > sinceImpact + 2.5 || tBack < sinceImpact - 3.5) continue;
+      for (let k = j + 1; k < C.length && C[k].f - C[j].f <= 3; k++) for (const c of C[k].list) {
+        const dfbc = c.f - b.f, px = b.x + vx * dfbc, py = b.y + vy * dfbc, err = Math.hypot(c.x - px, c.y - py);
+        if (err > Math.max(4, sp * .3 * dfbc)) continue;
+        const s = -perp / Math.max(sp, 1) - err / Math.max(sp, 1) + Math.min(240, Math.min(a.lift, b.lift, c.lift)) / 40 - (a.f - flight.t0) * .15 + (vy < 0 ? .3 : 0);
+        if (s > bs) { bs = s; best = [a, b, c]; }
+      }
+    }
+  return best;
+}
+function trackStep2(f, now){
+  const P = realPts(), last = P[P.length - 1], m = whiteMover(f), tf = now * fps / 1000; if (!m) return;
+  const pr = predict(P, tf), pp = predict(P, tf - 1), v = Math.hypot(pr.x - pp.x, pr.y - pp.y), gap = tf - last.f;
+  const Rs = Math.max(8, v * .6 + 5 + (gap - 1) * (v * .35 + 3));
+  const sx = pr.x - last.x, sy = pr.y - last.y, sm = Math.hypot(sx, sy) || 1;
+  let best = null, bs = 1e9;
+  for (const b of blobs(pr.x - Rs, pr.y - Rs, pr.x + Rs, pr.y + Rs, m, 3000)) {
+    if (b.area > Math.max(400, v * v * 4)) continue;
+    const tx = b.cx - last.x, ty = b.cy - last.y, tm = Math.hypot(tx, ty) || 1;
+    if (v > 3 && (tx * sx + ty * sy) / (tm * sm) < .3) continue;
+    const d = Math.hypot(b.cx - pr.x, b.cy - pr.y); if (d > Rs) continue;
+    const lc = localContrast(frameAt(f).mn, b); if (lc < 14) continue;
+    const s = d / Rs - Math.min(60, liftOf(b, f) + lc * .5) / 120;
+    if (s < bs) { bs = s; best = b; }
+  }
+  if (best) flight.pts.push({ x: best.cx, y: best.cy, f: tf, now });
+  else if (gap > Math.round(fps * .35) || pr.y < -ah * .1 || pr.x < -aw * .1 || pr.x > aw * 1.1 || pr.y > ah * 1.05) endFlight();
+}
+function polyfit(ts, vs, deg){
+  const n = ts.length;
+  if (deg === 2 && n >= 3) {
+    let s1 = 0, s2 = 0, s3 = 0, s4 = 0, b0 = 0, b1 = 0, b2 = 0;
+    for (let i = 0; i < n; i++) { const t = ts[i], v = vs[i], t2 = t * t; s1 += t; s2 += t2; s3 += t2 * t; s4 += t2 * t2; b0 += v; b1 += v * t; b2 += v * t2; }
+    const A = [[n, s1, s2], [s1, s2, s3], [s2, s3, s4]], b = [b0, b1, b2];
+    const det3 = M => M[0][0]*(M[1][1]*M[2][2]-M[1][2]*M[2][1]) - M[0][1]*(M[1][0]*M[2][2]-M[1][2]*M[2][0]) + M[0][2]*(M[1][0]*M[2][1]-M[1][1]*M[2][0]);
+    const D = det3(A);
+    if (Math.abs(D) > 1e-9) { const col = c => A.map((r, i) => r.map((v, j) => j === c ? b[i] : v)); return [det3(col(0)) / D, det3(col(1)) / D, det3(col(2)) / D]; }
+  }
+  if (n >= 2) {
+    let st = 0, sv = 0, stt = 0, stv = 0;
+    for (let i = 0; i < n; i++) { st += ts[i]; sv += vs[i]; stt += ts[i] * ts[i]; stv += ts[i] * vs[i]; }
+    const den = n * stt - st * st; if (Math.abs(den) < 1e-9) return [vs[n-1], 0, 0];
+    const m = (n * stv - st * sv) / den; return [(sv - m * st) / n, m, 0];
+  }
+  return [vs[0], 0, 0];
+}
+const ev = (c, t) => c[0] + c[1] * t + c[2] * t * t;
+const realPts = () => flight.pts.filter(p => !p.est);
+function predict(P, f){
+  // Skip the resting-ball point once we have real flight measurements (its launch time is only estimated).
+  const S = P.length >= 4 ? P.slice(1) : P, m = Math.min(8, S.length), Q = S.slice(-m), tref = Q[m-1].f, ts = Q.map(p => p.f - tref);
+  const cx = polyfit(ts, Q.map(p => p.x), m >= 6 ? 2 : 1), cy = polyfit(ts, Q.map(p => p.y), m >= 5 ? 2 : 1);
+  return { x: ev(cx, f - tref), y: ev(cy, f - tref) };
+}
+function smoothFlight(){
+  const P = realPts(); if (P.length < 6) return;
+  const sm = P.map((p, i) => { if (i === 0) return p; const w = P.slice(Math.max(1, i - 3), Math.min(P.length, i + 4)); if (w.length < 5) return p;
+    const ts = w.map(q => q.f - p.f); return { ...p, x: ev(polyfit(ts, w.map(q => q.x), 2), 0), y: ev(polyfit(ts, w.map(q => q.y), 2), 0) }; });
+  let k = 0; flight.pts = flight.pts.map(p => p.est ? p : sm[k++]);
+}
+function endFlight(){
+  if (flight.phase === 'acquire' || flight.phase === 'track') smoothFlight();
+  if (offlineImport) setSlow(false);
+  const P = realPts();
+  if (P.length < 3) { flight.failed = true; flight.pts = flight.pts.slice(0, 1); flight.phase = 'hold'; flight.holdUntil = performance.now() + 700; setStatus('rec', 'Lost the ball — finishing clip'); return; }
+  const lastP = P[P.length - 1], tref = lastP.f, ts = P.map(p => p.f - tref);
+  const cx = polyfit(ts, P.map(p => p.x), P.length >= 6 ? 2 : 1), cy = polyfit(ts, P.map(p => p.y), 2);
+  if (cy[2] <= 1e-4) cy[2] = cy[1] < 0 ? -cy[1] / (2 * fps * 1.5) : .02;
+  const tv = -cy[1] / (2 * cy[2]), yApex = tv > 0 ? ev(cy, tv) : Math.min(...P.map(p => p.y)), yLand = yApex + (P[0].y - yApex) * .3;
+  const T = Math.max(tv, fps) * 2; if (Math.abs(cx[2]) * T * T > aw * .4) cx[2] = Math.sign(cx[2]) * aw * .4 / (T * T);
+  flight.ext = { cx, cy, t: 0, tv, yLand, maxT: fps * 5, baseNow: lastP.now };
+  flight.phase = 'extrap';
+  if (tv <= 0 && lastP.y >= yLand) holdNow();
+}
+function extrapStep(){
+  const e = flight.ext; e.t += 1;
+  const x = ev(e.cx, e.t), y = ev(e.cy, e.t);
+  flight.pts.push({ x, y, est: true, now: e.baseNow + e.t * 1000 / fps });
+  if ((e.t > e.tv && y >= e.yLand) || e.t > e.maxT || y > ah * 1.2 || x < -aw * .5 || x > aw * 1.5) holdNow();
+}
+function holdNow(){ flight.phase = 'hold'; setStatus('rec', 'Shot traced — press Stop when ready'); }
+$('#tStart').onclick = () => {
+  resetZoom(); $('#tZoom').classList.add('hide');
+  if (offlineImport) {
+    if (!ball || mode !== 'locked' || importStarted) return;
+    importStarted = true; ball.run = 0; ball.start = frameIdx; slowRate = .25; lastMT = null; setSlow(false);
+    $('#tStart').classList.add('hide'); $('#tEnd').classList.remove('hide');
+    $('#importSeek').disabled = true; $('#importPlay').disabled = true;
+    $('#importHelp').textContent = 'Tracing the shot. The clip will stop when the flight is traced, or tap Stop to finish.';
+    setStatus('locked', 'Ready — tracing as video plays');
+    video.play().then(schedule).catch(() => { importStarted = false; $('#importSeek').disabled = false; $('#importPlay').disabled = false; toast('Tap Play scan to start this video'); });
+    return;
+  }
+  if (mode !== 'locked' || recording) return;
+  if (!startRecording()) { toast('Recording is unavailable in this browser'); return; }
+  recording = true; recT0 = performance.now();
+  $('#tStart').classList.add('hide'); $('#tReset').classList.add('hide'); $('#tEnd').classList.remove('hide');
+  setStatus('rec', 'Recording — take your shot');
+};
+$('#tEnd').onclick = () => { if (offlineImport && importStarted) { finishImportedVideo('manual'); return; } if (!recording || mode === 'review') return; recording = false; finishShot(); };
+function drawHud(now){
+  hctx.clearRect(0, 0, dw, dh);
+  const u = Math.min(dw, dh) / 100;
+  let p = null, color;
+  if (mode === 'search' && cand) { p = cand; color = '#FFFFFF'; } else if (mode === 'locked' && ball) { p = ball; color = '#22E07A'; }
+  if (!p) return;
+  const zz = Math.max(1, zoom.z), x = p.x / aw * dw, y = p.y / ah * dh, r = Math.max(u * 4 / zz, (p.r / aw * dw) * 2.4) * (mode === 'search' ? 1 + .12 * Math.sin(now / 160) : 1);
+  hctx.save(); hctx.strokeStyle = color; hctx.lineWidth = Math.max(2 / zz, u * .5 / zz);
+  if (mode === 'search') hctx.setLineDash([u * 1.6, u * 1.2]);
+  hctx.beginPath(); hctx.arc(x, y, r, 0, Math.PI * 2); hctx.stroke(); hctx.setLineDash([]);
+  if (mode === 'locked') {
+    const b = r * 1.7, L = r * .6; hctx.beginPath();
+    for (const [sx, sy] of [[-1,-1],[1,-1],[-1,1],[1,1]]) { hctx.moveTo(x + sx * b, y + sy * (b - L)); hctx.lineTo(x + sx * b, y + sy * b); hctx.lineTo(x + sx * (b - L), y + sy * b); }
+    hctx.stroke();
+    hctx.fillStyle = color; hctx.beginPath(); hctx.arc(x, y, Math.max(1, u * .35 / zz), 0, Math.PI * 2); hctx.fill();
+    hctx.font = `800 ${Math.max(8, Math.round(u * 2.8 / zz))}px Manrope, sans-serif`; hctx.textAlign = 'center'; hctx.fillText('L O C K E D', x, y - b - u * 1.5 / zz);
+  }
+  hctx.restore();
+}
+
+/* recording (raw camera — overlays stay editable) */
+let recorder = null, chunks = [], recToken = 0, recT0 = 0;
+let recording = false;
+const recMime = (() => {
+  if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
+  for (const m of ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm']) if (MediaRecorder.isTypeSupported(m)) return m;
+  return '';
+})();
+function startRecording(){
+  if (!window.MediaRecorder || !stream || recorder) return false;
+  const bps = quality === '4k' ? 24e6 : quality === '1080-60' ? 16e6 : 10e6;
+  try { recorder = new MediaRecorder(stream, recMime ? { mimeType: recMime, videoBitsPerSecond: bps } : undefined); }
+  catch (e) { try { recorder = new MediaRecorder(stream); } catch (e2) { recorder = null; return false; } }
+  chunks = []; const tok = ++recToken;
+  recorder.ondataavailable = e => { if (tok === recToken && e.data && e.data.size) chunks.push(e.data); };
+  recorder.onstart = () => { if (tok === recToken) recT0 = performance.now(); };
+  try { recorder.start(250); recT0 = performance.now(); return true; }
+  catch (e) { recorder = null; return false; }
+}
+function stopRecording(discard){
+  return new Promise(res => {
+    if (!recorder || recorder.state === 'inactive') { recorder = null; res(null); return; }
+    const r = recorder, tok = discard ? ++recToken : recToken, t0 = recT0, dur = (performance.now() - t0) / 1000;
+    r.onstop = () => { if (discard || tok !== recToken) { res(null); return; } res({ blob: new Blob(chunks, { type: (r.mimeType || recMime || 'video/webm').split(';')[0] }), dur, t0 }); };
+    recorder = null; try { r.stop(); } catch (e) { res(null); }
+  });
+}
+
+/* review */
+const rvPlayer = new Player($('#rvStage'));
+let pending = null;
+async function finishShot(){
+  mode = 'review'; $('#tEnd').classList.add('hide');
+  $('#save').textContent = 'Save shot'; $('#saveEdit').textContent = 'Save & open editor';
+  const res = await stopRecording(false);
+  const tc = document.createElement('canvas'), tw = 360; tc.width = tw; tc.height = Math.round(tw * dh / dw);
+  tc.getContext('2d').drawImage(disp, 0, 0, tc.width, tc.height);
+  const t0 = res ? res.t0 : recT0, failed = !flight || flight.failed;
+  pending = {
+    blob: res && res.blob, dur: res && res.dur, createdAt: (shotTime || new Date()).getTime(), thumb: tc.toDataURL('image/jpeg', .72),
+    trace: failed ? [] : flight.pts.map(p => ({ x: +(p.x / aw).toFixed(4), y: +(p.y / ah).toFixed(4), t: +Math.max(0, (p.now - t0) / 1000).toFixed(3) })),
+    impactT: flight ? Math.max(0, (flight.pts[0].now - t0) / 1000) : null, showTrace: true, traceColor: 'green', res: `${vw}×${vh}`
+  };
+  $('#sheetTitle').textContent = failed ? 'Recording ready' : 'Shot finished';
+  $('#sheetMeta').textContent = (fmtDate(new Date(pending.createdAt)) + ' · ' + fmtTime(new Date(pending.createdAt))).toUpperCase() + (failed ? ' · ADD A TRACE IN THE EDITOR' : '');
+  const ok = !!(pending.blob && pending.blob.size);
+  $('#save').disabled = $('#saveEdit').disabled = !ok; $('#save').textContent = ok ? 'Save shot' : 'Recording not supported';
+  setStatus('idle', 'Save or discard this shot');
+  $('#sheet').classList.add('on');
+  if (ok) { try { await rvPlayer.load(pending); rvPlayer.play(); } catch (e) {} }
+}
+function buildShot(p){
+  return { id: 's' + p.createdAt + Math.random().toString(36).slice(2, 6), v: 2, createdAt: p.createdAt, blob: p.blob, mime: p.blob.type, thumb: p.thumb, dur: p.dur,
+    trace: p.trace, impactT: p.impactT, showTrace: true, traceColor: 'green', res: p.res, hole: null, roundId: null,
+    hand: { keys: [], color: 'ivory' }, club: { keys: [], color: 'gold' }, target: null, card: { show: false }, trim: null, manualTrace: null, stamp: true };
+}
+function tagRound(s){ if (roundCtx) { s.roundId = roundCtx.id; s.hole = roundCtx.hole; s.card = { show: true }; } return s; }
+$('#save').onclick = async () => { if (!pending || !pending.blob) return; await put('shots', tagRound(buildShot(pending))); keepStorage(); toast(roundCtx ? `Saved to Hole ${roundCtx.hole}` : 'Saved to Gallery'); closeSheet(); };
+$('#saveEdit').onclick = async () => { if (!pending || !pending.blob) return; const s = tagRound(buildShot(pending)); await put('shots', s); keepStorage(); $('#sheet').classList.remove('on'); rvPlayer.unload(); pending = null; closeTracer(); edReturn = roundCtx ? 'round' : 'gallery'; openEditor(s, 'shot'); };
+$('#discard').onclick = () => { toast('Shot discarded'); closeSheet(); };
+function closeSheet(){
+  $('#sheet').classList.remove('on'); rvPlayer.unload(); pending = null;
+  if (importedReview) { importedReview = false; mode = 'off'; flight = null; ball = null; openGallery(); return; }
+  resetToSearch();
+}
+function resetToSearch(){
+  if (recording) return;
+  stopRecording(true);
+  flight = null; ball = null; cand = null; stable = 0; shotTime = null; mode = 'search';
+  $('#tEnd').classList.add('hide'); $('#tStart').classList.remove('hide'); $('#tStart').classList.remove('hot'); $('#tStart').disabled = true; $('#tReset').classList.remove('hide'); $('#tZoom').classList.remove('hide');
+  setStatus('search', 'Searching for a ball… tap to lock manually');
+}
+$('#tReset').onclick = () => {
+  if (offlineImport && !importStarted) {
+    ball = null; flight = null; cand = null; stable = 0; mode = 'search'; $('#tStart').disabled = true; $('#tStart').classList.add('hide');
+    $('#tStart').classList.remove('hot'); $('#importHelp').textContent = 'Video is paused. Drag the timeline to the ball, then tap it to lock. Start lights up when the ball is locked.'; setStatus('search', 'Video paused — find and lock the ball');
+    video.pause(); lastT = -1; onFrame(); return;
+  }
+  if (mode === 'search' || mode === 'locked') resetToSearch();
+};
+
+/* ================= GALLERY ================= */
+const TOOLNAME = { club: 'Club Trace', hand: 'Hand Trace', target: 'a Target' };
+async function openGallery(){
+  show('gallery');
+  const [shots, rounds] = await Promise.all([all('shots'), all('rounds')]);
+  const rmap = new Map(rounds.map(r => [r.id, r]));
+  shots.sort((a, b) => b.createdAt - a.createdAt);
+  $('#gCount').textContent = shots.length ? shots.length + (shots.length === 1 ? ' shot' : ' shots') : '';
+  const bn = $('#gBanner'); if (pendingTool && shots.length) { bn.textContent = `Pick a shot to add ${TOOLNAME[pendingTool]}.`; bn.classList.remove('hide'); } else bn.classList.add('hide');
+  const grid = $('#grid'); grid.innerHTML = '';
+  $('#gEmpty').classList.toggle('hide', shots.length > 0);
+  for (const s of shots) {
+    const d = new Date(s.createdAt), b = document.createElement('button'); b.className = 'card';
+    const r = s.roundId && rmap.get(s.roundId);
+    b.innerHTML = `<img alt=""><div class="badges">${s.hole ? `<span class="badge g">Hole ${s.hole}</span>` : ''}${r ? `<span class="badge">${esc(r.course || 'Round')}</span>` : ''}</div><div class="meta"><b>${esc(fmtDate(d))}</b><span>${esc(fmtTime(d))}</span></div>`;
+    b.querySelector('img').src = s.thumb;
+    b.onclick = () => { const t = pendingTool; pendingTool = null; edReturn = 'gallery'; openEditor(s, t || 'shot'); };
+    grid.appendChild(b);
+  }
+}
+$('#importVideoBtn').onclick = () => $('#importVideoFile').click();
+$('#importVideoFile').onchange = e => { const file = e.target.files && e.target.files[0]; e.target.value = ''; if (file) startImportedVideo(file); };
+$('#importPlay').onclick = () => {
+  if (importLoadFailed) { $('#importVideoFile').click(); return; }
+  if (!offlineImport || importStarted) return;
+  if (video.paused) {
+    if (mode === 'locked') { ball = null; flight = null; cand = null; stable = 0; mode = 'search'; $('#tStart').disabled = true; $('#tStart').classList.add('hide'); setStatus('search', 'Scanning for a ball… tap the ball to lock manually'); }
+    video.play().then(schedule).catch(() => toast('Could not play this video'));
+  }
+  else video.pause();
+};
+$('#importSeek').addEventListener('pointerdown', () => { if (offlineImport && !importStarted) { importSeeking = true; video.pause(); } });
+$('#importSeek').oninput = e => {
+  if (!offlineImport || importStarted) return;
+  video.pause();
+  if (mode !== 'search') { flight = null; ball = null; cand = null; stable = 0; mode = 'search'; $('#tStart').disabled = true; $('#tStart').classList.add('hide'); $('#tStart').classList.remove('hot'); }
+  const target = Number(e.target.value);
+  if (Number.isFinite(target)) video.currentTime = target;
+};
+video.addEventListener('seeked', () => {
+  if (!offlineImport || importStarted) return;
+  importSeeking = false; lastT = -1; onFrame();
+});
+async function startImportedVideo(file){
+  try {
+    closeTracer(); pendingTool = null; importFile = file; importUrl = URL.createObjectURL(file); offlineImport = true; importedReview = false; importFinalizing = false; importStarted = false; importSeeking = false; importLoadFailed = false;
+    video.pause(); video.srcObject = null; video.removeAttribute('src'); video.dataset.sourceFps = '30'; video.load(); video.src = importUrl; video.loop = false; video.muted = true; video.playsInline = true;
+    show('tracer'); $('#camErr').classList.add('hide'); $('#tStart').classList.add('hide'); $('#tReset').classList.remove('hide'); $('#tReset').textContent = 'Reset lock'; $('#tEnd').classList.add('hide'); $('#qBtn').classList.add('hide'); $('#tHole').classList.add('hide'); $('#importTools').classList.remove('hide');
+    setStatus('search', 'Loading your video…');
+    await waitForVideoMetadata(video, 15000);
+    if (!video.videoWidth || !Number.isFinite(video.duration)) throw new Error('This video format could not be opened.');
+    try {
+      const probe = document.createElement('video'); probe.muted = true; probe.playsInline = true; probe.src = importUrl;
+      if (probe.requestVideoFrameCallback) {
+        await new Promise(resolve => {
+          let done = false, count = 0, first = null, total = 0;
+          const finish = () => { if (done) return; done = true; clearTimeout(timer); try { probe.pause(); probe.removeAttribute('src'); probe.load(); } catch (e) {} if (first && count > 2 && total > 0) video.dataset.sourceFps = String(Math.round((count - 1) * 1000000 / total)); resolve(); };
+          const timer = setTimeout(finish, 1200);
+          probe.requestVideoFrameCallback(function tick(now, meta){ if (!first) first = meta.mediaTime; count++; total = Math.max(0, meta.mediaTime - first) * 1000000; if (count < 8 && !done) probe.requestVideoFrameCallback(tick); else finish(); });
+          probe.play().catch(finish);
+        });
+      }
+    } catch (e) { video.dataset.sourceFps = '30'; }
+    if (video.readyState < 2) await Promise.race([once(video, 'loadeddata'), new Promise(resolve => setTimeout(resolve, 5000))]);
+    if (video.readyState < 2) throw new Error('Chrome loaded the clip but could not decode its first frame.');
+    setupDims(); lastNow = 0; lastT = -1; fps = Math.min(60, Math.max(1, Number(video.dataset.sourceFps) || 30)); stream = { getTracks: () => [] };
+    resetToSearch(); $('#tStart').classList.add('hide'); $('#tStart').disabled = true; $('#tReset').classList.remove('hide'); $('#qBtn').classList.add('hide');
+    $('#importSeek').disabled = false; $('#importPlay').disabled = false; $('#importSeek').max = video.duration; $('#importSeek').value = 0;
+    $('#importHelp').textContent = 'Video is paused. Drag the timeline to the ball, then tap it to lock. Start lights up when the ball is locked.';
+    video.onended = finishImportedAtEnd;
+    setStatus('search', 'Video paused — find and lock the ball');
+    try { video.currentTime = 0; } catch (e) {}
+    video.pause(); lastT = -1; onFrame();
+  } catch (err) {
+    if (importUrl) { URL.revokeObjectURL(importUrl); importUrl = null; }
+    video.onended = null; video.pause(); video.removeAttribute('src'); try { video.load(); } catch (e) {}
+    offlineImport = false; importedReview = false; importFile = null; importFinalizing = false; importStarted = false; importSeeking = false; importLoadFailed = true; stream = null; mode = 'off';
+    $('#importTools').classList.remove('hide'); $('#importPlay').disabled = false; $('#importPlay').textContent = 'Choose another'; $('#importSeek').disabled = true; $('#tStart').classList.add('hide'); $('#tReset').classList.add('hide'); $('#tEnd').classList.add('hide');
+    const detail = err?.message || 'The browser could not open this video.';
+    $('#importHelp').textContent = `${detail} Try a standard MP4 (H.264), then tap Choose another.`;
+    setStatus('idle', 'Video could not load'); toast('This clip could not be opened. Try MP4 (H.264).');
+  }
+}
+function waitForVideoMetadata(v, timeoutMs){
+  if (v.readyState >= 1 && v.videoWidth > 0 && Number.isFinite(v.duration)) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    let timer;
+    const cleanup = () => { clearTimeout(timer); v.removeEventListener('loadedmetadata', onMeta); v.removeEventListener('error', onError); };
+    const onMeta = () => { cleanup(); resolve(); };
+    const onError = () => { const code = v.error && v.error.code; cleanup(); reject(new Error(code === 4 ? 'This video codec is not supported by Chrome.' : 'Chrome could not read this video file.')); };
+    v.addEventListener('loadedmetadata', onMeta, { once: true }); v.addEventListener('error', onError, { once: true });
+    timer = setTimeout(() => { cleanup(); reject(new Error('The video did not load in time. It may use an unsupported codec.')); }, timeoutMs);
+    v.load();
+  });
+}
+function finishImportedAtEnd(){
+  if (!offlineImport || importFinalizing) return;
+  if (!importStarted) { video.pause(); setStatus('search', 'Ball not found yet — scrub to the ball and tap it to lock'); $('#importHelp').textContent = 'The scan reached the end. Drag the timeline to the ball, then tap it to lock manually.'; return; }
+  if (mode === 'flight' && flight?.phase === 'track') endFlight();
+  if (mode === 'flight' && flight?.phase === 'extrap') { let guard = 0; while (flight.phase === 'extrap' && guard++ < 800) extrapStep(); }
+  finishImportedVideo('ended');
+}
+async function finishImportedVideo(reason){
+  if (!offlineImport || importFinalizing || !importFile) return;
+  importFinalizing = true; video.pause();
+  if (flight && flight.phase === 'track') endFlight();
+  if (flight && flight.phase === 'extrap') { let guard = 0; while (flight.phase === 'extrap' && guard++ < 800) extrapStep(); }
+  const f = flight, points = f?.pts || [], failed = !f || f.failed || points.length < 3;
+  const thumbCanvas = document.createElement('canvas'), tw = 360; thumbCanvas.width = tw; thumbCanvas.height = Math.max(1, Math.round(tw * dh / Math.max(1, dw)));
+  try { thumbCanvas.getContext('2d').drawImage(disp, 0, 0, thumbCanvas.width, thumbCanvas.height); } catch (e) {}
+  const createdAt = (shotTime || new Date()).getTime(), sourceFile = importFile;
+  pending = { blob: sourceFile, dur: video.duration, createdAt, thumb: thumbCanvas.toDataURL('image/jpeg', .72),
+    trace: failed ? [] : points.map(p => ({ x: +(p.x / aw).toFixed(4), y: +(p.y / ah).toFixed(4), t: +Math.max(0, p.now / 1000).toFixed(3) })),
+    impactT: !failed ? Math.max(0, points[0].now / 1000) : null, showTrace: true, traceColor: 'green', res: `${vw}×${vh}` };
+  importedReview = true; offlineImport = false; importFinalizing = false; importFile = null; stream = null; mode = 'review';
+  importStarted = false; importSeeking = false; $('#importTools').classList.add('hide');
+  video.onended = null; if (importUrl) { URL.revokeObjectURL(importUrl); importUrl = null; } video.removeAttribute('src'); try { video.load(); } catch (e) {}
+  $('#tStart').classList.add('hide'); $('#tReset').classList.add('hide'); $('#qBtn').classList.add('hide'); $('#tEnd').classList.add('hide');
+  $('#sheetTitle').textContent = failed ? 'Video ready' : 'Tracer ready';
+  $('#sheetMeta').textContent = (fmtDate(new Date(createdAt)) + ' · ' + fmtTime(new Date(createdAt))).toUpperCase() + (failed ? ' · BALL NOT TRACKED — ADD A TRACE IN THE EDITOR' : ' · AUTOMATIC BALL TRACE');
+  $('#save').disabled = $('#saveEdit').disabled = false; $('#save').textContent = 'Save video'; $('#saveEdit').textContent = 'Save & edit trace';
+  setStatus('idle', failed ? 'No automatic trace — add one in the editor' : 'Ball traced — save or edit'); $('#sheet').classList.add('on');
+  try { await rvPlayer.load(pending); rvPlayer.play(); } catch (e) { toast('Video loaded. Preview could not start.'); }
+}
+
+/* ================= EDITOR ================= */
+const ed = { shot: null, round: null, tool: 'shot', draw: 0, temp: [], seq: 0, dragging: false };
+const edPlayer = new Player($('#eStage'), { onTap: edTap, onTime: edTime });
+let saveT;
+function saveShot(){ clearTimeout(saveT); saveT = setTimeout(() => ed.shot && put('shots', ed.shot), 350); }
+async function openEditor(s, tool){
+  show('editor'); ed.shot = s; ed.draw = 0; ed.temp = [];
+  s.hand = s.hand || { keys: [], color: 'ivory' }; s.club = s.club || { keys: [], color: 'gold' };
+  s.card = s.card || { show: false }; if (s.showTrace == null) s.showTrace = true; if (!s.traceColor) s.traceColor = 'green'; if (s.stamp == null) s.stamp = true;
+  ed.round = s.roundId ? await get('rounds', s.roundId) : null;
+  edPlayer.opts = { brand: true, stamp: s.stamp, round: ed.round };
+  setTitle();
+  try { await edPlayer.load(s); } catch (e) { toast('Couldn’t open this clip'); }
+  $('#eScrub').max = edPlayer.dur || 1; updateBand();
+  selectTool(tool || 'shot');
+}
+function setTitle(){
+  const s = ed.shot, d = new Date(s.createdAt);
+  $('#eTitle').textContent = s.hole ? `Hole ${s.hole}` + (ed.round ? ` · ${ed.round.course || 'Round'}` : '') : fmtDate(d);
+  $('#eSub').textContent = (s.hole ? fmtDate(d) + ' · ' : '') + fmtTime(d);
+}
+function edTime(t){
+  if (!ed.dragging) $('#eScrub').value = t;
+  $('#eClock').textContent = `${fmtClock(t)} / ${fmtClock(edPlayer.dur)}`;
+  $('#ePlayIc').innerHTML = edPlayer.v.paused ? '<path d="M8 5v14l11-7z"/>' : '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
+  edPlayer.opts.keys = (ed.tool === 'club' || ed.tool === 'hand') ? ed.shot[ed.tool].keys : null;
+  edPlayer.opts.temp = ed.temp.length ? ed.temp : null;
+}
+function updateBand(){
+  const s = ed.shot, D = edPlayer.dur || 1, a = s.trim ? s.trim[0] : 0, b = s.trim ? s.trim[1] : D, band = $('#eBand');
+  band.style.left = `calc(14px + ${(a / D * 100).toFixed(2)}% - ${(a / D * 28).toFixed(2)}px)`;
+  band.style.width = `calc(${((b - a) / D * 100).toFixed(2)}% - ${((b - a) / D * 28).toFixed(2)}px)`;
+  band.classList.toggle('hide', !s.trim);
+}
+$('#eScrub').addEventListener('pointerdown', () => { ed.dragging = true; edPlayer.pause(); });
+$('#eScrub').addEventListener('input', e => edPlayer.seek(+e.target.value));
+['pointerup', 'change'].forEach(evn => $('#eScrub').addEventListener(evn, () => { ed.dragging = false; }));
+$('#ePlay').onclick = () => edPlayer.toggle();
+$('#eBackF').onclick = () => edPlayer.step(-1);
+$('#eFwdF').onclick = () => edPlayer.step(1);
+let edReturn = 'gallery';
+function leaveEditor(){ edPlayer.unload(); if (edReturn === 'round' && roundCtx) backToHole(); else openGallery(); }
+$('#eBack').onclick = async () => { clearTimeout(saveT); if (ed.shot) await put('shots', ed.shot); leaveEditor(); };
+$('#eDel').onclick = async () => {
+  if (!(await ask({ title: 'Delete this shot?', text: 'The clip and every trace on it will be removed from this phone. This can’t be undone.', ok: 'Delete', danger: true }))) return;
+  clearTimeout(saveT); await del('shots', ed.shot.id); edPlayer.unload(); ed.shot = null; toast('Shot deleted'); leaveEditor();
+};
+$$('#eTools .tool').forEach(b => b.onclick = () => selectTool(b.dataset.t));
+function hint(txt){ const h = $('#eHint'); if (txt) { h.textContent = txt; h.classList.remove('hide'); } else h.classList.add('hide'); }
+function selectTool(t){
+  ed.tool = t; ed.draw = 0; ed.temp = [];
+  $$('#eTools .tool').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  if (t === 'club' || t === 'hand' || t === 'target') edPlayer.pause();
+  renderPanel();
+}
+const swatches = (key, cur) => `<div class="swrow">${Object.keys(COLORS).map(c => `<button class="swc ${c === cur ? 'on' : ''}" data-sw="${key}" data-c="${c}" style="background:${COLORS[c].main}" aria-label="${c}"></button>`).join('')}</div>`;
+function renderPanel(){
+  const s = ed.shot, p = $('#ePanel'), t = ed.tool;
+  let h = '';
+  if (t === 'shot') {
+    const auto = s.trace && s.trace.length > 2;
+    h = `<div class="prow"><span class="ptitle">Shot Tracer</span><input type="checkbox" class="sw" id="pShow" ${s.showTrace ? 'checked' : ''} aria-label="Show shot trace"></div>
+      ${swatches('trace', s.traceColor)}
+      <p class="pnote">${auto ? 'Ball flight was tracked automatically on this shot.' : 'No automatic trace on this clip — draw one by hand.'}</p>
+      <div class="pbtns"><button class="pbtn g" id="pDraw">${s.manualTrace ? 'Redraw by hand' : 'Draw by hand'}</button>${s.manualTrace ? '<button class="pbtn" id="pDelM">Remove hand trace</button>' : ''}</div>
+      ${s.manualTrace ? `<div class="prow"><span class="plabel">Flight time</span><span class="mono" id="pDurV">${s.manualTrace.dur.toFixed(1)}s</span></div><input type="range" id="pDur" min="1" max="8" step="0.1" value="${s.manualTrace.dur}" aria-label="Flight time">` : ''}`;
+    hint(null);
+  } else if (t === 'club' || t === 'hand') {
+    const k = s[t], name = t === 'club' ? 'clubhead' : 'hands';
+    h = `<div class="ptitle">${t === 'club' ? 'Club Tracer' : 'Hand Tracer'}</div>
+      <p class="pnote">Find a frame, tap the ${name}. Each tap adds a point and steps forward two frames. Mark takeaway through finish for a full swing arc.</p>
+      <div class="prow"><span class="plabel">${k.keys.length} point${k.keys.length === 1 ? '' : 's'}</span><div class="pbtns"><button class="pbtn" id="pUndo" ${k.keys.length ? '' : 'disabled'}>Undo</button><button class="pbtn" id="pClear" ${k.keys.length ? '' : 'disabled'}>Clear</button></div></div>
+      ${swatches(t, k.color)}`;
+    hint(`Tap the ${name}`);
+  } else if (t === 'target') {
+    const tg = s.target || {};
+    h = `<div class="ptitle">Target</div>
+      <p class="pnote">Tap the landing area to place the target, then add your yardage and club.</p>
+      <div class="fields"><label>Yards<input id="tY" type="number" inputmode="numeric" min="1" max="700" value="${tg.yards || ''}" placeholder="175"></label>
+      <label>Club<select id="tC"><option value="">—</option>${CLUBS.map(c => `<option ${tg.club === c ? 'selected' : ''}>${c}</option>`).join('')}</select></label></div>
+      ${s.target ? '<button class="pbtn" id="tDel">Remove target</button>' : ''}`;
+    hint(s.target ? null : 'Tap where the ball lands');
+  } else if (t === 'score') {
+    h = `<div class="prow"><span class="ptitle">Scorecard</span><input type="checkbox" class="sw" id="cShow" ${s.card.show ? 'checked' : ''} ${ed.round ? '' : 'disabled'} aria-label="Show scorecard on clip"></div>
+      <div class="fields" style="grid-template-columns:1fr"><label>Round<select id="cRound"><option value="">No round</option></select></label></div>
+      <span class="plabel">Hole</span>
+      <div class="holes">${Array.from({ length: 18 }, (_, i) => `<button class="hb ${s.hole === i + 1 ? 'on' : ''}" data-h="${i + 1}">${i + 1}</button>`).join('')}</div>
+      ${ed.round && s.hole ? `<div class="prow"><span class="plabel">Par ${ed.round.pars[s.hole - 1]} · Score</span><div class="stepper"><button id="sMinus" aria-label="Lower score">−</button><output id="sVal">${ed.round.scores[s.hole - 1] ?? '–'}</output><button id="sPlus" aria-label="Raise score">+</button></div></div>`
+        : `<p class="pnote">${ed.round ? 'Pick the hole to keep score.' : 'Pick or start a round to keep score and show a scorecard on the clip.'}</p>`}`;
+    hint(null);
+  } else if (t === 'cut') {
+    const D = edPlayer.dur || 1, a = s.trim ? s.trim[0] : 0, b = s.trim ? s.trim[1] : D;
+    h = `<div class="prow"><span class="ptitle">Cut</span><span class="mono" id="cLen">${(b - a).toFixed(1)}s</span></div>
+      <div class="prow"><span class="plabel">Start</span><span class="mono" id="cAv">${fmtClock(a)}</span></div>
+      <input type="range" id="cA" min="0" max="${D}" step="0.05" value="${a}" aria-label="Clip start">
+      <div class="prow"><span class="plabel">End</span><span class="mono" id="cBv">${fmtClock(b)}</span></div>
+      <input type="range" id="cB" min="0" max="${D}" step="0.05" value="${b}" aria-label="Clip end">
+      <div class="prow"><span class="plabel">Date &amp; time stamp</span><input type="checkbox" class="sw" id="cStamp" ${s.stamp ? 'checked' : ''} aria-label="Show date and time stamp"></div>
+      ${s.trim ? '<button class="pbtn" id="cReset">Reset cut</button>' : ''}`;
+    hint(null);
+  }
+  p.innerHTML = h; bindPanel();
+}
+function bindPanel(){
+  const s = ed.shot;
+  $$('#ePanel [data-sw]').forEach(b => b.onclick = () => { const k = b.dataset.sw, c = b.dataset.c; if (k === 'trace') s.traceColor = c; else s[k].color = c; saveShot(); renderPanel(); });
+  const on = (id, evn, fn) => { const el = document.getElementById(id); if (el) el.addEventListener(evn, fn); };
+  on('pShow', 'change', e => { s.showTrace = e.target.checked; saveShot(); });
+  on('pDraw', 'click', () => { ed.draw = 1; ed.temp = []; edPlayer.pause(); hint('Scrub to impact, then tap the ball'); });
+  on('pDelM', 'click', () => { s.manualTrace = null; saveShot(); renderPanel(); });
+  on('pDur', 'input', e => { s.manualTrace.dur = +e.target.value; $('#pDurV').textContent = s.manualTrace.dur.toFixed(1) + 's'; saveShot(); });
+  on('pUndo', 'click', () => { const k = s[ed.tool].keys; if (!k.length) return; let mi = 0; k.forEach((x, i) => { if ((x.n || 0) > (k[mi].n || 0)) mi = i; }); k.splice(mi, 1); saveShot(); renderPanel(); });
+  on('pClear', 'click', async () => { if (await ask({ title: 'Clear all points?', ok: 'Clear', danger: true })) { s[ed.tool].keys = []; saveShot(); renderPanel(); } });
+  on('tY', 'input', e => { if (!s.target) return; s.target.yards = e.target.value ? Math.round(+e.target.value) : null; saveShot(); });
+  on('tC', 'change', e => { if (!s.target) return; s.target.club = e.target.value || null; saveShot(); });
+  on('tDel', 'click', () => { s.target = null; saveShot(); renderPanel(); });
+  on('cShow', 'change', e => { s.card.show = e.target.checked; saveShot(); });
+  if (document.getElementById('cRound')) fillRounds();
+  $$('#ePanel [data-h]').forEach(b => b.onclick = () => { const n = +b.dataset.h; s.hole = s.hole === n ? null : n; saveShot(); setTitle(); renderPanel(); });
+  on('sMinus', 'click', () => bumpScore(-1));
+  on('sPlus', 'click', () => bumpScore(1));
+  const trimIn = () => {
+    const D = edPlayer.dur || 1; let a = +$('#cA').value, b = +$('#cB').value;
+    if (b - a < .3) { if (document.activeElement && document.activeElement.id === 'cA') a = Math.max(0, b - .3); else b = Math.min(D, a + .3); $('#cA').value = a; $('#cB').value = b; }
+    s.trim = (a <= .01 && b >= D - .01) ? null : [a, b];
+    $('#cAv').textContent = fmtClock(a); $('#cBv').textContent = fmtClock(b); $('#cLen').textContent = (b - a).toFixed(1) + 's';
+    updateBand(); saveShot();
+  };
+  on('cA', 'input', () => { trimIn(); edPlayer.pause(); edPlayer.seek(+$('#cA').value); });
+  on('cB', 'input', () => { trimIn(); edPlayer.pause(); edPlayer.seek(+$('#cB').value); });
+  on('cReset', 'click', () => { s.trim = null; updateBand(); saveShot(); renderPanel(); });
+  on('cStamp', 'change', e => { s.stamp = e.target.checked; edPlayer.opts.stamp = s.stamp; saveShot(); });
+}
+async function fillRounds(){
+  const sel = $('#cRound'), rounds = (await all('rounds')).sort((a, b) => b.date - a.date);
+  sel.innerHTML = '<option value="">No round</option>' + rounds.map(r => `<option value="${esc(r.id)}" ${ed.shot.roundId === r.id ? 'selected' : ''}>${esc(r.course || 'Round')} · ${esc(fmtDay(new Date(r.date)))}</option>`).join('') + '<option value="__new">＋ Start a new round</option>';
+  sel.onchange = async () => {
+    const v = sel.value;
+    if (v === '__new') { const r = await newRound(); if (!r) { sel.value = ed.shot.roundId || ''; return; } ed.shot.roundId = r.id; ed.round = r; }
+    else { ed.shot.roundId = v || null; ed.round = v ? rounds.find(r => r.id === v) : null; }
+    if (!ed.round) ed.shot.card.show = false; else if (!ed.shot.card.show) ed.shot.card.show = true;
+    edPlayer.opts.round = ed.round; saveShot(); setTitle(); renderPanel();
+  };
+}
+function bumpScore(d){
+  const r = ed.round, h = ed.shot.hole; if (!r || !h) return;
+  const cur = r.scores[h - 1]; r.scores[h - 1] = cur == null ? r.pars[h - 1] + (d > 0 ? 0 : -1) : clamp(cur + d, 1, 15);
+  $('#sVal').textContent = r.scores[h - 1]; put('rounds', r);
+}
+function edTap(p){
+  const s = ed.shot, t = edPlayer.v.currentTime;
+  if (ed.tool === 'shot' && ed.draw) {
+    ed.temp.push(p);
+    if (ed.draw === 1) { ed.drawT0 = t; ed.draw = 2; hint('Tap the highest point of the flight'); }
+    else if (ed.draw === 2) { ed.draw = 3; hint('Tap where it lands'); }
+    else { s.manualTrace = { p0: ed.temp[0], p1: ed.temp[1], p2: ed.temp[2], t0: ed.drawT0, dur: 3 }; if (s.impactT == null) s.impactT = ed.drawT0; ed.draw = 0; ed.temp = []; hint(null); saveShot(); renderPanel(); toast('Shot trace drawn'); edPlayer.seek(ed.drawT0); edPlayer.play(); }
+    return;
+  }
+  if (ed.tool === 'club' || ed.tool === 'hand') {
+    const k = s[ed.tool].keys, i = k.findIndex(x => Math.abs(x.t - t) < 1 / 120);
+    const key = { t: +t.toFixed(3), x: p.x, y: p.y, n: ++ed.seq + Date.now() };
+    if (i >= 0) k[i] = key; else k.push(key);
+    k.sort((a, b) => a.t - b.t); saveShot(); renderPanel(); edPlayer.step(2);
+    return;
+  }
+  if (ed.tool === 'target') {
+    const old = s.target || {}; s.target = { x: p.x, y: p.y, yards: old.yards || null, club: old.club || null };
+    saveShot(); renderPanel();
+    if (!old.x) setTimeout(() => { const y = $('#tY'); if (y) y.focus(); }, 50);
+  }
+}
+
+/* ================= EXPORT ================= */
+$('#eExport').onclick = () => {
+  edPlayer.pause();
+  $('#xStamp').checked = !!ed.shot.stamp; $('#xProg').classList.add('hide'); $('#xMsg').classList.add('hide'); $('#xGo').disabled = false; $('#xGo').textContent = 'Export & save';
+  $('#xWrap').classList.add('on');
+};
+$('#xStamp').onchange = e => { ed.shot.stamp = e.target.checked; edPlayer.opts.stamp = ed.shot.stamp; saveShot(); };
+let exporting = false;
+$('#xClose').onclick = () => { if (!exporting) $('#xWrap').classList.remove('on'); };
+$('#xGo').onclick = async () => {
+  if (exporting) return; exporting = true;
+  const go = $('#xGo'), bar = $('#xBar'), msg = $('#xMsg');
+  go.disabled = true; go.textContent = 'Rendering…'; $('#xProg').classList.remove('hide'); bar.style.width = '0%';
+  msg.textContent = 'Keep MAX TRACER open while it renders.'; msg.classList.remove('hide');
+  try {
+    const blob = await renderExport(ed.shot, ed.round, pr => { bar.style.width = (clamp(pr, 0, 1) * 100).toFixed(1) + '%'; });
+    bar.style.width = '100%'; go.textContent = 'Saving…';
+    await saveToPhone(blob, fileName(ed.shot, blob.type));
+    msg.textContent = 'Export complete.';
+  } catch (e) { msg.textContent = 'Export failed on this device. Try a shorter cut or HD capture.'; }
+  exporting = false; go.disabled = false; go.textContent = 'Export again';
+};
+async function renderExport(s, round, onProg){
+  if (!window.MediaRecorder) throw new Error('no recorder');
+  const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.setAttribute('playsinline', '');
+  v.style.cssText = 'position:fixed;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none';
+  document.body.appendChild(v);
+  const url = URL.createObjectURL(s.blob); v.src = url;
+  try {
+    if (!(v.readyState >= 1)) await once(v, 'loadedmetadata');
+    const dur = await resolveDuration(v, s.dur), a = s.trim ? s.trim[0] : 0, b = s.trim ? Math.min(s.trim[1], dur) : dur;
+    const k = Math.min(1, 1920 / Math.max(v.videoWidth, v.videoHeight)), W = Math.round(v.videoWidth * k / 2) * 2, H = Math.round(v.videoHeight * k / 2) * 2;
+    const c = document.createElement('canvas'); c.width = W; c.height = H; const ctx = c.getContext('2d');
+    const opts = { brand: true, stamp: s.stamp, round };
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    v.currentTime = a; await Promise.race([once(v, 'seeked'), sleep(900)]);
+    const paint = t => { ctx.drawImage(v, 0, 0, W, H); drawOverlays(ctx, W, H, s, t, opts); };
+    paint(a);
+    const st = c.captureStream(30), chunks = [];
+    const rec = new MediaRecorder(st, recMime ? { mimeType: recMime, videoBitsPerSecond: 12e6 } : undefined);
+    rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    const stopped = new Promise(r => rec.onstop = r);
+    rec.start(200); await v.play();
+    await new Promise(res => { const step = () => { const t = v.currentTime; paint(t); onProg((t - a) / Math.max(.01, b - a)); if (t >= b - .03 || v.ended) { res(); return; } requestAnimationFrame(step); }; requestAnimationFrame(step); });
+    v.pause();
+    const until = performance.now() + 900;
+    await new Promise(res => { const hold = () => { paint(b); if (performance.now() < until) requestAnimationFrame(hold); else res(); }; hold(); });
+    rec.stop(); await stopped;
+    return new Blob(chunks, { type: (rec.mimeType || recMime || 'video/webm').split(';')[0] });
+  } finally { v.pause(); v.remove(); URL.revokeObjectURL(url); }
+}
+
+/* ================= ROUNDS ================= */
+async function newRound(){
+  const picked = await new Promise(resolve => {
+    const modal = $('#modal'), input = $('#mInput'), list = $('#newCourseResults'), ok = $('#mOk'), cancel = $('#mCancel');
+    let timer, seq = 0, selected = null;
+    $('#mTitle').textContent = 'New round';
+    $('#mText').textContent = 'Search for a course, then select a suggestion or enter your own name.';
+    $('#mText').classList.remove('hide'); input.classList.remove('hide'); input.value = ''; input.placeholder = 'Course name';
+    list.replaceChildren(); list.classList.add('hide'); ok.textContent = 'Start round'; ok.className = 'btn solid';
+    modal.classList.add('on'); setTimeout(() => input.focus(), 60);
+    const done = value => { clearTimeout(timer); ++seq; modal.classList.remove('on'); list.classList.add('hide'); input.oninput = input.onkeydown = ok.onclick = cancel.onclick = null; resolve(value); };
+    input.oninput = () => {
+      selected = null; const q = input.value.trim(), request = ++seq; clearTimeout(timer);
+      if (q.length < 3) { list.classList.add('hide'); return; }
+      list.classList.remove('hide'); list.textContent = 'Searching public courses…';
+      timer = setTimeout(async () => {
+        try {
+          const response = await fetch(courseAPI + '?q=' + encodeURIComponent(q) + '&limit=25');
+          if (!response.ok) throw new Error('Lookup unavailable');
+          const data = await response.json(); if (request !== seq) return;
+          list.replaceChildren(); const matches = Array.isArray(data.courses) ? data.courses : [];
+          if (!matches.length) { list.textContent = 'No matches. You can enter the course manually.'; return; }
+          matches.forEach(c => {
+            const button = document.createElement('button'); button.type = 'button'; button.setAttribute('role', 'option');
+            const name = document.createElement('span'), detail = document.createElement('small');
+            name.textContent = c.name;
+            detail.textContent = [c.city, c.region, c.country?.toUpperCase()].filter(Boolean).join(', ') + (c.coverage?.scorecard ? ' · Scorecard available' : '');
+            button.append(name, detail);
+            button.onclick = () => { selected = c; input.value = c.name; ++seq; list.classList.add('hide'); input.focus(); };
+            list.appendChild(button);
+          });
+        } catch (e) { if (request === seq) list.textContent = 'Lookup unavailable. You can enter the course manually.'; }
+      }, 300);
+    };
+    input.onkeydown = e => { if (e.key === 'Enter') ok.click(); };
+    ok.onclick = () => done({ name: input.value.trim(), course: selected });
+    cancel.onclick = () => done(null);
+  });
+  if (!picked) return null;
+  const r = { id: 'r' + Date.now(), course: picked.name || 'Round', date: Date.now(), pars: Array(18).fill(4), scores: Array(18).fill(null) };
+  await put('rounds', r); keepStorage(); r._selectedCourse = picked.course; return r;
+}
+async function openRounds(){
+  show('rounds');
+  const rounds = (await all('rounds')).sort((a, b) => b.date - a.date), list = $('#rList');
+  $('#rEmpty').classList.toggle('hide', rounds.length > 0);
+  list.innerHTML = rounds.map(r => {
+    let tp = 0, played = 0, tot = 0; r.scores.forEach((s, i) => { if (s != null) { tp += s - r.pars[i]; played++; tot += s; } });
+    return `<div class="rcard-wrap"><button class="rcard" data-r="${esc(r.id)}"><div class="l"><b>${esc(r.course || 'Round')}</b><span>${esc(fmtDay(new Date(r.date)))} · ${played ? `${played} holes · ${tot}` : 'Not started'}</span></div><span class="topar ${tp < 0 ? 'u' : ''}">${played ? toParStr(tp) : '–'}</span></button><button class="round-options" data-options="${esc(r.id)}" aria-label="Options for ${esc(r.course || 'Round')}" aria-expanded="false">Options</button><div class="round-menu hide"><button data-delete="${esc(r.id)}">Delete scorecard</button></div></div>`;
+  }).join('');
+  $$('#rList [data-r]').forEach(b => b.onclick = () => openRound(b.dataset.r));
+  $$('#rList [data-options]').forEach(b => b.onclick = () => {
+    const menu = b.nextElementSibling, opening = menu.classList.contains('hide');
+    $$('#rList .round-menu').forEach(m => m.classList.add('hide'));
+    $$('#rList [data-options]').forEach(x => x.setAttribute('aria-expanded', 'false'));
+    menu.classList.toggle('hide', !opening); b.setAttribute('aria-expanded', String(opening));
+  });
+  $$('#rList [data-delete]').forEach(b => b.onclick = () => deleteRound(b.dataset.delete));
+}
+async function deleteRound(id){
+  const round = (await all('rounds')).find(r => r.id === id);
+  if (!round || !(await ask({ title: 'Delete this scorecard?', text: `Delete ${round.course || 'this round'}? Saved shots stay in your gallery, but their scorecard link is removed.`, ok: 'Delete', danger: true }))) return;
+  await del('rounds', id);
+  for (const s of await all('shots')) if (s.roundId === id) { s.roundId = null; if (s.card) s.card.show = false; await put('shots', s); }
+  if (curRound?.id === id) curRound = null;
+  roundCtx = null; openRounds();
+}
+$('#rBack').onclick = () => show('home');
+$('#rNew').onclick = async () => { const r = await newRound(); if (r) openRound(r.id, r._selectedCourse); };
+let curRound = null, roundCtx = null;
+async function openRound(id, preselectedCourse = null){
+  curRound = (await get('rounds', id)) || curRound; if (!curRound) { openRounds(); return; }
+  show('roundEd'); $('#reCourse').value = curRound.course || '';
+  $('#courseResults').classList.add('hide'); renderCourseInfo();
+  await renderRound();
+  if (preselectedCourse) chooseCourse(preselectedCourse);
+  else if (!curRound.courseSource && curRound.course && curRound.course !== 'Round') searchCourses(curRound.course);
+}
+let courseSearchTimer, courseRequest = 0, selectedCourse = null;
+const courseAPI = 'https://api.golfcore.org/v1/courses';
+async function searchCourses(q){
+  const seq = ++courseRequest, list = $('#courseResults');
+  if (q.trim().length < 3) { list.classList.add('hide'); return; }
+  list.classList.remove('hide'); list.textContent = 'Searching public courses…';
+  try {
+    const response = await fetch(courseAPI + '?q=' + encodeURIComponent(q.trim()) + '&limit=25');
+    if (!response.ok) throw new Error('Lookup unavailable');
+    const data = await response.json(); if (seq !== courseRequest || $('#roundEd').classList.contains('hide')) return;
+    const matches = Array.isArray(data.courses) ? data.courses : [];
+    list.replaceChildren();
+    if (!matches.length) { list.textContent = 'No match found. You can enter the scorecard manually.'; return; }
+    matches.forEach(c => {
+      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'option');
+      const title = document.createElement('span'), detail = document.createElement('small');
+      title.textContent = c.name; detail.textContent = [c.city, c.region, c.country?.toUpperCase()].filter(Boolean).join(', ') + (c.coverage?.scorecard ? ' · Scorecard available' : ' · Hole data may be unavailable');
+      b.append(title, detail); b.onclick = () => chooseCourse(c); list.appendChild(b);
+    });
+  } catch (e) { if (seq === courseRequest) list.textContent = 'Course lookup is unavailable. Check your connection or enter details manually.'; }
+}
+async function chooseCourse(c){
+  const owner = curRound, info = $('#courseInfo'); $('#courseResults').classList.add('hide'); info.textContent = 'Loading tee scorecards…';
+  try {
+    const response = await fetch(courseAPI + '/' + encodeURIComponent(c.slug)); if (!response.ok) throw new Error('Course unavailable');
+    selectedCourse = await response.json(); if (curRound !== owner) return;
+    curRound.course = selectedCourse.name; $('#reCourse').value = selectedCourse.name;
+    const variants = (selectedCourse.layouts || []).flatMap((layout, li) => (layout.tees || []).map((tee, ti) => ({layout,tee,li,ti})));
+    if (!variants.length) { info.textContent = 'No tee scorecard is published for this course. Enter hole details manually.'; return; }
+    info.replaceChildren();
+    const label = document.createElement('div'); label.textContent = 'Choose the course layout and tees to fill the scorecard:';
+    const select = document.createElement('select'); select.setAttribute('aria-label','Course layout and tees');
+    variants.forEach((v,i) => { const opt = document.createElement('option'); opt.value = i; opt.textContent = [v.layout.name, v.tee.name, v.tee.gender, v.tee.yards ? v.tee.yards + ' yd' : ''].filter(Boolean).join(' · '); select.appendChild(opt); });
+    const apply = document.createElement('button'); apply.className = 'btn solid'; apply.type = 'button'; apply.textContent = 'Use these tees'; apply.style.width = '100%';
+    apply.onclick = () => applyCourse(selectedCourse, variants[+select.value]);
+    info.append(label, select, apply);
+  } catch (e) { info.textContent = 'Could not load this scorecard. Try another course or enter hole details manually.'; }
+}
+async function applyCourse(course, selection){
+  if (!selection || !curRound) return;
+  const { layout, tee } = selection, holes = Array.isArray(tee.holes) ? tee.holes : [];
+  const yards = Array(18).fill(null), handicaps = Array(18).fill(null), pars = curRound.pars.slice();
+  for (const h of holes) {
+    const i = Number(h.position) - 1; if (i < 0 || i >= 18) continue;
+    if (Number.isInteger(h.par) && h.par >= 3 && h.par <= 6) pars[i] = h.par;
+    if (Number.isFinite(h.yards) && h.yards > 0) yards[i] = h.yards;
+    if (Number.isInteger(h.stroke_index) && h.stroke_index > 0) handicaps[i] = h.stroke_index;
+  }
+  curRound.course = course.name; curRound.pars = pars; curRound.yards = yards; curRound.handicaps = handicaps;
+  curRound.courseSource = { provider: 'GolfCore', url: course.url || 'https://www.golfcore.org/', slug: course.slug, layout: layout.name, tee: tee.name, gender: tee.gender, rating: tee.rating, slope: tee.slope };
+  await put('rounds', curRound); $('#reCourse').value = course.name; renderCourseInfo(); renderRound();
+}
+function renderCourseInfo(){
+  const info = $('#courseInfo'), source = curRound?.courseSource;
+  info.replaceChildren();
+  if (!source) { info.textContent = 'Type a course name to find its public scorecard. Confirm the course and tee before filling hole details.'; return; }
+  const line = document.createElement('span'); line.textContent = [source.layout, source.tee, source.gender, source.rating != null ? 'Rating ' + source.rating : '', source.slope != null ? 'Slope ' + source.slope : ''].filter(Boolean).join(' · ');
+  const link = document.createElement('a'); link.href = source.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = 'Source: GolfCore / OpenStreetMap contributors';
+  info.append(line, document.createElement('br'), link);
+}
+async function renderRound(){
+  const r = curRound, shots = (await all('shots')).filter(x => x.roundId === r.id), cnt = Array(18).fill(0);
+  shots.forEach(x => { if (x.hole) cnt[x.hole - 1]++; });
+  $('#reHoles').innerHTML = r.pars.map((p, i) => {
+    const sc = r.scores[i], cls = sc == null ? '' : sc < p ? 'b' : sc > p ? 'o' : '';
+    return `<div class="hrow"><button class="hopen" data-open="${i + 1}" aria-label="Open hole ${i + 1}"><span class="hn">${i + 1}</span><small class="${cnt[i] ? '' : 'none'}">${cnt[i] ? cnt[i] + (cnt[i] === 1 ? ' shot' : ' shots') : 'Open ›'}</small></button>
+      <input class="yard-input" type="number" inputmode="numeric" min="1" max="1000" data-yard="${i}" value="${r.yards?.[i] ?? ''}" placeholder="yd" aria-label="Yards for hole ${i + 1}">
+      <div class="seg" role="group" aria-label="Par for hole ${i + 1}">${[3, 4, 5].map(v => `<button class="${p === v ? 'on' : ''}" data-par="${i}" data-v="${v}">${v}</button>`).join('')}</div>
+      <div class="stepper"><button data-sc="${i}" data-d="-1" aria-label="Lower score hole ${i + 1}">−</button><output class="${cls}">${sc ?? '–'}</output><button data-sc="${i}" data-d="1" aria-label="Raise score hole ${i + 1}">+</button></div></div>`;
+  }).join('');
+  const sum = (from, to) => { let t = 0, n = 0; for (let i = from; i < to; i++) if (r.scores[i] != null) { t += r.scores[i]; n++; } return n ? t : null; };
+  const out = sum(0, 9), inn = sum(9, 18); let tp = 0, any = false; r.scores.forEach((x, i) => { if (x != null) { tp += x - r.pars[i]; any = true; } });
+  $('#sOut').textContent = out ?? '–'; $('#sIn').textContent = inn ?? '–'; $('#sTot').textContent = out == null && inn == null ? '–' : (out || 0) + (inn || 0);
+  $('#sPar').textContent = any ? toParStr(tp) : '–'; $('#sPar').style.color = any && tp < 0 ? 'var(--green)' : '';
+  $$('#reHoles [data-open]').forEach(b => b.onclick = () => openHole(+b.dataset.open));
+  $$('#reHoles [data-par]').forEach(b => b.onclick = () => { r.pars[+b.dataset.par] = +b.dataset.v; put('rounds', r); renderRound(); });
+  $$('#reHoles [data-yard]').forEach(b => b.onchange = () => { r.yards ||= Array(18).fill(null); r.yards[+b.dataset.yard] = b.value ? +b.value : null; put('rounds', r); });
+  $$('#reHoles [data-sc]').forEach(b => b.onclick = () => { scoreStep(+b.dataset.sc, +b.dataset.d); renderRound(); });
+}
+function scoreStep(i, d){ const r = curRound, c = r.scores[i]; r.scores[i] = c == null ? r.pars[i] + (d > 0 ? 0 : -1) : (c + d < 1 ? null : clamp(c + d, 1, 15)); put('rounds', r); }
+function openHole(h){ roundCtx = { id: curRound.id, hole: h }; renderHole(); $('#holeSheet').classList.add('on'); }
+async function renderHole(){
+  const r = curRound, h = roundCtx.hole, i = h - 1;
+  $('#hsTitle').textContent = `Hole ${h}`; $('#hsCourse').textContent = r.course || '';
+  const sc = r.scores[i], v = $('#hsVal'); v.textContent = sc ?? '–'; v.style.color = sc == null ? '' : sc < r.pars[i] ? 'var(--green)' : sc > r.pars[i] ? 'var(--gold)' : '';
+  $('#hsPar').innerHTML = [3, 4, 5].map(p => `<button class="${r.pars[i] === p ? 'on' : ''}" data-p="${p}">${p}</button>`).join('');
+  $$('#hsPar [data-p]').forEach(b => b.onclick = () => { r.pars[i] = +b.dataset.p; put('rounds', r); renderHole(); renderRound(); });
+  $('#hsNext').disabled = h >= 18; $('#hsNext').textContent = h >= 18 ? 'Last hole' : `Hole ${h + 1} →`;
+  const shots = (await all('shots')).filter(x => x.roundId === r.id && x.hole === h).sort((a, b) => a.createdAt - b.createdAt), box = $('#hsShots');
+  box.innerHTML = shots.map((x, k) => `<button data-shot="${esc(x.id)}" aria-label="Open shot ${k + 1}"><img alt="" src="${x.thumb}"></button>`).join('');
+  $$('#hsShots [data-shot]').forEach(b => b.onclick = () => { const x = shots.find(y => y.id === b.dataset.shot); $('#holeSheet').classList.remove('on'); edReturn = 'round'; openEditor(x, 'shot'); });
+}
+$('#hsMinus').onclick = () => { scoreStep(roundCtx.hole - 1, -1); renderHole(); renderRound(); };
+$('#hsPlus').onclick = () => { scoreStep(roundCtx.hole - 1, 1); renderHole(); renderRound(); };
+$('#hsTrace').onclick = () => { $('#holeSheet').classList.remove('on'); gate('tracer'); };
+$('#hsNext').onclick = () => { if (roundCtx.hole < 18) { roundCtx.hole++; renderHole(); } };
+$('#hsDone').onclick = () => $('#holeSheet').classList.remove('on');
+$('#holeSheet').addEventListener('click', e => { if (e.target.id === 'holeSheet') $('#holeSheet').classList.remove('on'); });
+async function backToHole(){ if (!roundCtx) { openRounds(); return; } await openRound(roundCtx.id); renderHole(); $('#holeSheet').classList.add('on'); }
+$('#reCourse').addEventListener('input', e => { if (!curRound) return; curRound.course = e.target.value; curRound.courseSource = null; clearTimeout(saveT); saveT = setTimeout(() => put('rounds', curRound), 300); clearTimeout(courseSearchTimer); courseSearchTimer = setTimeout(() => searchCourses(e.target.value), 350); renderCourseInfo(); });
+$('#reBack').onclick = () => { roundCtx = null; openRounds(); };
+$('#reDel').onclick = () => { if (curRound) deleteRound(curRound.id); };
+
+/* ================= SAVE TO PHONE ================= */
+let downloads = null;
+const inClaude = !!(window.claude && typeof window.claude.use === 'function');
+if (inClaude) window.claude.use('downloads').then(d => { downloads = d; }).catch(() => {});
+function fileName(s, type){
+  const d = new Date(s.createdAt), p = n => String(n).padStart(2, '0'), ext = (type || '').includes('mp4') ? 'mp4' : 'webm';
+  return `maxtracer-${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}${s.hole ? '-hole' + s.hole : ''}.${ext}`;
+}
+async function saveToPhone(blob, name){
+  if (downloads) { try { await downloads.save({ filename: name, data: blob }); toast('Saved to phone'); } catch (e) { if (e && e.code !== 'declined') toast('Couldn’t save to phone here'); } return; }
+  try { const file = new File([blob], name, { type: blob.type || 'video/mp4' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'MAX TRACER shot' }); return; } }
+  catch (e) { if (e && e.name === 'AbortError') return; }
+  const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(u), 5000); toast('Download started');
+}
+
+/* ================= INSTALL ================= */
+keepStorage();
+if (!inClaude && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+const standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+let installEvt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (!inClaude && !standalone) $('#installBtn').classList.remove('hide'); });
+$('#installBtn').onclick = async () => {
+  if (standalone) { toast('MAX TRACER is already installed'); return; }
+  if (installEvt) {
+    const prompt = installEvt; installEvt = null;
+    try { await prompt.prompt(); const choice = await prompt.userChoice; if (choice?.outcome === 'accepted') $('#installBtn').classList.add('hide'); else toast('Chrome dismissed installation. Tap Install again when ready.'); }
+    catch (e) { toast('Chrome could not open the app install prompt. Use the browser menu.'); }
+    return;
+  }
+  if (isIOS) { $('#iosHint').classList.remove('hide'); $('#iosHint').scrollIntoView({behavior:'smooth',block:'center'}); toast(/CriOS|FxiOS|EdgiOS|OPiOS/i.test(navigator.userAgent) ? 'Open this page in Safari, then use Share and Add to Home Screen' : 'Use Share, then Add to Home Screen'); return; }
+  if (navigator.userAgent.includes('Android')) {
+    toast('Tap Chrome’s ⋮ menu and choose Install app. If it only offers Add to Home screen, that creates a shortcut.');
+    return;
+  }
+  toast('Use your browser menu to install MAX TRACER');
+};
+window.addEventListener('appinstalled', () => { $('#installBtn').classList.add('hide'); toast('MAX TRACER installed'); });
+if (standalone) $('#installBtn').classList.add('hide');
+if (isIOS && !standalone && !inClaude) $('#iosHint').classList.remove('hide');
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { hidePerm(); $('#holeSheet').classList.remove('on'); if (!exporting) $('#xWrap').classList.remove('on'); } });
+})();
+</script>
+</body>
+</html>
