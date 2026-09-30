@@ -1,4 +1,4 @@
-const CACHE = 'maxtracer-brand-v14';
+const CACHE = 'maxtracer-brand-v15';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './max-trace-logo.png', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
 // Cache each file on its own so one missing file can't block install.
 self.addEventListener('install', e => {
